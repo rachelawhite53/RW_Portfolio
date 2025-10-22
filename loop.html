@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swirling Jet System Control Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+    padding: 10px;
+    min-height: 100vh;
+  }
+  
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  .header h1 {
+    margin: 0 0 5px 0;
+    font-size: 30px;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .header .subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+  }
+  
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .diagram-section {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .diagram-placeholder {
+    width: 100%;
+    height: 850px; 
+    background: #f8fafc;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    overflow-y: auto;
+  }
+  
+  .diagram-image {
+    flex: 1 1 50%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e0e7ff;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .diagram-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  
+  .controls-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .component-btn {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 2px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+  
+  .component-btn:hover {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    transform: translateX(3px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  }
+  
+  .component-btn.active {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+  
+  .component-btn .name {
+    font-weight: 700;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 2px;
+    color: #0f172a;
+  }
+  
+  .component-btn .type {
+    font-size: 11px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+  
+  .info-section {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    min-height: 200px;
+  }
+  
+  .info-section.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .info-section .empty-text {
+    color: #94a3b8;
+    font-style: italic;
+  }
+  
+  .info-content h2 {
+    margin: 0 0 6px 0;
+    font-size: 24px;
+    color: #0f172a;
+  }
+  
+  .info-content .subtitle {
+    color: #3b82f6;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .info-content p {
+    color: #475569;
+    line-height: 1.6;
+    margin: 8px 0;
+  }
+  
+  .info-content .specs {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 8px;
+    border-left: 3px solid #3b82f6;
+  }
+  
+  .info-content .specs h3 {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    color: #2563eb;
+    font-weight: 600;
+  }
+  
+  .info-content .specs ul {
+    margin: 0;
+    padding-left: 15px;
+    color: #475569;
+  }
+  
+  .info-content .specs li {
+    margin: 4px 0;
+    font-size: 14px;
+  }
+  
+  .category-header {
+    color: wit;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin: 10px 0 4px 0;
+    padding-left: 2px;
+  }
+  
+  .category-header:first-child {
+    margin-top: 0;
+  }
+  
+  @media (max-width: 1024px) {
+    .main-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .diagram-placeholder {
+      height: 600px; /* Adjusted height*/
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Swirling Jet System Control Panel</h1>
+      <div class="subtitle">Click components to explore the system architecture</div>
+    </div>
+    
+    <div class="main-grid">
+      <div class="diagram-section">
+        <div class="diagram-placeholder">
+          <div class="diagram-image">
+            <img src="loop.png" alt="System Diagram Loop 1">
+          </div>
+          <div class="diagram-image">
+            <img src="loop2.png" alt="System Diagram Loop 2">
+          </div>
+        </div>
+      </div>
+      
+      <div class="controls-panel">
+        <div class="category-header">Primary Flow System</div>
+        
+        <button class="component-btn" data-component="pump">
+          <div>
+            <span class="name">Pump</span>
+            <span class="type">Mechanical Component</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="filter">
+          <div>
+            <span class="name">Filter</span>
+            <span class="type">Flow Conditioning</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="buffer">
+          <div>
+            <span class="name">Buffer Reservoir</span>
+            <span class="type">Storage</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="valve">
+          <div>
+            <span class="name">Adjustable Flow Valve</span>
+            <span class="type">Control</span>
+          </div>
+        </button>
+        
+        <div class="category-header">Jet Formation System</div>
+        
+        <button class="component-btn" data-component="honeycomb">
+          <div>
+            <span class="name">Honeycomb</span>
+            <span class="type">Flow Straightener</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="swirler">
+          <div>
+            <span class="name">Swirler</span>
+            <span class="type">Angular Momentum</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="contraction">
+          <div>
+            <span class="name">Contraction Zone</span>
+            <span class="type">Flow Acceleration</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="nozzle">
+          <div>
+            <span class="name">Nozzle</span>
+            <span class="type">Exit Geometry</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="tank">
+          <div>
+            <span class="name">Tank w/ Swirling Jet</span>
+            <span class="type">Test Section</span>
+          </div>
+        </button>
+        
+        <div class="category-header">Return System</div>
+        
+        <button class="component-btn" data-component="return1">
+          <div>
+            <span class="name">1st Return Reservoir</span>
+            <span class="type">Collection</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="overflow1">
+          <div>
+            <span class="name">1st Overflow Valve</span>
+            <span class="type">Control</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="return2">
+          <div>
+            <span class="name">2nd Return Reservoir</span>
+            <span class="type">Collection</span>
+          </div>
+        </button>
+        
+        <button class="component-btn" data-component="overflow2">
+          <div>
+            <span class="name">2nd Overflow Valve</span>
+            <span class="type">Control</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    
+    <div class="info-section empty" id="infoPanel">
+      <div class="empty-text">Select a component to view detailed information</div>
+    </div>
+  </div>
+
+  <script>
+    const componentInfo = {
+      pump: {
+        title: "Pump",
+        subtitle: "Mechanical Component",
+        description: "The primary circulation device that drives fluid through the entire system. It draws from the buffer reservoir and supplies pressurized flow to the return reservoirs.",
+        specs: {
+          title: "Key Specifications",
+          items: [
+            "Provides continuous flow circulation during testing",
+            "Variable speed control for flow rate adjustment",
+            "Designed for low-turbulence operation"
+          ]
+        }
+      },
+      filter: {
+        title: "Filter",
+        subtitle: "Flow Conditioning Component",
+        description: "Removes particulates and debris from the recirculating fluid to maintain clean flow conditions and protect downstream components. Essential for maintaining flow quality and equipment longevity.",
+        specs: {
+          title: "Key Specifications",
+          items: [
+            "Mesh filtration system",
+            "Captures particles down to micron level",
+            "Low pressure drop"          ]
+        }
+      },
+      buffer: {
+        title: "Buffer Reservoir",
+        subtitle: "Storage Component",
+        description: "Provides a stable supply of fluid to the return reserviors and helps dampen pressure fluctuations. This ensures smooth, consistent flow rates through the experimental apparatus.",
+        specs: {
+          title: "Key Specifications",
+          items: [
+            "Large volume for flow stability",
+            "Overflow management system",
+            "~45 GAL Capacity"
+          ]
+        }
+      },
+      valve: {
+        title: "Adjustable Flow Valve",
+        subtitle: "Control Component",
+        description: "Controls the total flow rate entering the swirling jet system. By adjusting this valve, you can regulate how much fluid flows from the tank to the buffer reservoir."
+      },
+      honeycomb: {
+        title: "Honeycomb Flow Straightener",
+        subtitle: "Flow Conditioning Component",
+        description: "Straightens and conditions the axial flow (Va) before it enters the contraction zone. The honeycomb structure removes turbulence and swirl from upstream components, ensuring uniform axial flow.",
+        specs: {
+          title: "Key Specifications",
+          items: [
+            "Provides axial flow (Va) to contraction zone",
+            "Removes upstream turbulence and swirl",
+            "Low pressure drop design"
+          ]
+        }
+      },
+      swirler: {
+        title: "Swirler",
+        subtitle: "Angular Momentum Component",
+        description: "Introduces tangential flow (Vt) into the contraction zone through multiple tangential inlets. The swirler design determines the angular momentum imparted to the flow, controlling the swirl number S.",
+        specs: {
+          title: "Key Parameters",
+          items: [
+            "Inlet diameter D₁ (~65mm)",
+            "Multiple tangential inlet ports (~4)",
+            "Rectangular inlet cross-section (h × b)",
+            "Provides tangential flow (Vt) component"
+          ]
+        }
+      },
+      contraction: {
+        title: "Contraction Zone",
+        subtitle: "Flow Acceleration Component",
+        description: "This zone combines the axial flow (Va) from the honeycomb with the tangential flow (Vt) from the swirler, creating the swirling motion.",
+        specs: {
+          title: "Key Specifications",
+          items: [
+            "Combines axial (Va) and tangential (Vt) flows",
+            "Smooth, linear profile",
+            "Combined flow moves towards the nozzle"
+          ]
+        }
+      },
+      nozzle: {
+        title: "Nozzle",
+        subtitle: "Exit Geometry Component",
+        description: "The critical component where swirling jet conditions are established. The nozzle diameter (DN) and geometry determine the final jet characteristics. Flow exits at velocity Vin with both axial and tangential components.",
+        specs: {
+          title: "Key Parameters",
+          items: [
+            "Nozzle diameter DN (~26mm)",
+            "Defines exit velocity Vin",
+            "Controls Reynolds number Re = ρDNv̄N/μ",
+            "Establishes swirl number S = v̄N,θ/v̄N,ax"
+          ]
+        }
+      },
+      tank: {
+        title: "Tank with Swirling Jet",
+        subtitle: "Test Section",
+        description: "The main experimental tank where the swirling jet is generated and observed. The jet exits through the nozzle and creates a swirling flow pattern in the tank. This is where flow visualization occurs.",
+        specs: {
+          title: "Key Features",
+          items: [
+            "Receives swirling jet from nozzle (Vout)",
+            "Contains a large volume of water",
+            "Transparent for optimal visualization"
+          ]
+        }
+      },
+      return1: {
+        title: "1st Return Reservoir",
+        subtitle: "Collection Component",
+        description: "A reservoir that receives water from the pump & buffer reservoir. The adjustable height (±h) allows control over the hydrostatic pressure in the system, affecting flow rates and stability.",
+        specs: {
+          title: "Key Specifications",
+          items: [
+            "Adjustable height (±h) for pressure control",
+            "Receives water from the pump",
+            "Level regulation capability",
+            "Feeds the honeycomb & axial flow"
+          ]
+        }
+      },
+      overflow1: {
+        title: "1st Overflow Valve",
+        subtitle: "Control Component",
+        description: "Controls overflow from the 1st return reservoir. This valve helps maintain consistent water levels.",
+        specs: {
+          title: "Key Specifications",
+          items: [
+            "Prevents overflow conditions",
+            "Adjustable overflow threshold",
+            "Works with 2nd overflow for system balance"
+          ]
+        }
+      },
+      return2: {
+        title: "2nd Return Reservoir",
+        subtitle: "Collection Component",
+        description: "Secondary collection reservoir providing additional flow control and system stability. Like the first reservoir, its adjustable height (±h) offers another level of flow regulation.",
+        specs: {
+          title: "Key Specifications",
+          items: [
+            "Adjustable height (±h) for pressure control",
+            "Additional system stability",
+            "Feeds the swirler & tangential flow"
+          ]
+        }
+      },
+      overflow2: {
+        title: "2nd Overflow Valve",
+        subtitle: "Control Component",
+        description: "Controls overflow from the 2nd return reservoir, completing the flow regulation system. Works in conjunction with the first overflow valve to maintain system equilibrium.",
+        specs: {
+          title: "Key Specifications",
+          items: [
+            "Secondary overflow control",
+            "System equilibrium management",
+            "Adjustable overflow threshold",
+            "Completes return flow circuit"
+          ]
+        }
+      }
+    };
+    
+    const buttons = document.querySelectorAll('.component-btn');
+    const infoPanel = document.getElementById('infoPanel');
+    
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const key = btn.dataset.component;
+        const info = componentInfo[key];
+        
+        infoPanel.classList.remove('empty');
+        infoPanel.innerHTML = `
+          <div class="info-content">
+            <h2>${info.title}</h2>
+            <div class="subtitle">${info.subtitle}</div>
+            <p>${info.description}</p>
+            <div class="specs">
+              <h3>${info.specs.title}</h3>
+              <ul>
+                ${info.specs.items.map(item => `<li>${item}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>

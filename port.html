@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Interactive Report: Swirling Jet Flow Experiment</title>
+
+    <!-- Tailwind & Chart.js -->
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+    <!-- Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- MathJax config (v3) - supports inline $...$ and \(..\) -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          packages: {'[+]': ['ams']}
+        },
+        options: {
+          skipHtmlTags: ['script','style','textarea','pre','code']
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chosen Palette: Engineering Blueprint -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        .section-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.3s ease;
+        }
+        .nav-button {
+            transition: all 0.2s ease;
+        }
+        .nav-button.active {
+            color: #2563eb; /* blue-600 */
+            border-bottom: 2px solid #2563eb;
+        }
+        .flow-component {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+        }
+        .flow-component:hover {
+            transform: scale(1.03);
+            border-color: #3b82f6; /* blue-500 */
+        }
+        .flow-component.selected {
+            border-color: #2563eb; /* blue-600 */
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        .info-card {
+            display: none;
+        }
+        .info-card.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        /* Timeline styles */
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            padding-left: 2.5rem;
+            border-left: 2px solid #e2e8f0; /* slate-200 */
+        }
+        .timeline-item:last-child {
+            border-left: 2px solid transparent;
+        }
+        .timeline-marker {
+            position: absolute;
+            left: -0.6rem;
+            top: 0.1rem;
+            height: 1.125rem;
+            width: 1.125rem;
+            background-color: white;
+            border: 2px solid #94a3b8; /* slate-400 */
+            border-radius: 9999px;
+            transition: all 0.2s ease;
+        }
+        .timeline-item.completed .timeline-marker {
+             background-color: #2563eb;
+             border-color: #2563eb;
+        }
+        .onshape-frame {
+            border: none;
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            border-radius: 0.5rem;
+        }
+        /* New Diagram Styles */
+        .flow-block {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        /* Color Mapping: Red/Pink for Active/Pumping, Blue for Reservoirs/Stability, Green for Flow Conditioning/Test */
+        .pump-color { background-color: #fca5a5; /* Red-300 */ }
+        .reservoir-color { background-color: #93c5fd; /* Blue-300 */ }
+        .condition-color { background-color: #bbf7d0; /* Green-200 */ }
+
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900">Swirling Jet Flow Experiment</h1>
+            <p class="mt-4 text-lg text-slate-600">An Interactive Exploration of Experimental Design & Governing Physics</p>
+        </header>
+
+        <nav class="flex justify-center border-b border-slate-200 mb-8 space-x-4 sm:space-x-8">
+            <button class="nav-button active py-4 px-2 sm:px-4 text-sm sm:text-base font-medium text-slate-500 hover:text-blue-600" data-section="concepts">1. Concepts</button>
+            <button class="nav-button py-4 px-2 sm:px-4 text-sm sm:text-base font-medium text-slate-500 hover:text-blue-600" data-section="explorer">2. Flow Loop Explorer</button>
+            <button class="nav-button py-4 px-2 sm:px-4 text-sm sm:text-base font-medium text-slate-500 hover:text-blue-600" data-section="calculator">3. Parameter Calculator</button>
+            <button class="nav-button py-4 px-2 sm:px-4 text-sm sm:text-base font-medium text-slate-500 hover:text-blue-600" data-section="roadmap">4. Project Roadmap</button>
+        </nav>
+
+        <main>
+            <!-- Section 1: Concepts -->
+            <section id="concepts" class="space-y-8">
+                <div class="section-card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold mb-4">What is a Swirling Jet?</h2>
+                    <p class="text-slate-600 leading-relaxed mb-4">A swirling jet is an axial fluid flow that has a superimposed tangential (rotational) velocity component. This rotation fundamentally changes the flow's behavior, making it a critical area of study in fluid dynamics. It enhances mixing, alters stability, and is essential in applications from combustion chambers to industrial mixers.</p>
+                    <div class="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <h3 class="font-semibold text-slate-800">Key Application: The Central Recirculation Zone (CRZ)</h3>
+                        <p class="text-slate-600 mt-1">Strong swirl creates a region of reverse flow along the jet's centerline. This CRZ is vital for stabilizing flames in combustors, as it traps hot gases and provides a continuous ignition source for incoming fuel.</p>
+                    </div>
+                </div>
+                 <div class="section-card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold mb-4">Governing Parameters & Regimes</h2>
+                    <p class="text-slate-600 mb-6">Controlling the <strong>Swirl Number (S)</strong> and <strong>Reynolds Number (Re)</strong> dictates the jet's flow regime and stability mechanisms.</p>
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 lg:col-span-2">
+                            <h3 class="text-xl font-semibold mb-2">Swirl Regimes (Controlled by $S$)</h3>
+                            <ul class="list-disc list-inside space-y-1 text-sm text-slate-700">
+                                <li><strong class="text-blue-600">Low $S$:</strong> Jet remains <strong>axisymmetric</strong> and stable.</li>
+                                <li><strong class="text-orange-600">Moderate $S$ ($S>0.6$):</strong> Symmetry breaks, developing <strong>helical instabilities</strong> (spiral waves, $m=1$ mode).</li>
+                                <li><strong class="text-red-600">High $S$ ($S \approx 1.3\text{--}1.4$):</strong> <strong>Vortex Breakdown</strong> occurs (stagnation point, recirculation bubble/cone) (Billant 1998).</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                             <h3 class="text-xl font-semibold mb-2">Flow Regime (Controlled by $Re$)</h3>
+                            <ul class="list-disc list-inside space-y-1 text-sm text-slate-700">
+                                <li><strong class="text-blue-600">Low $Re$ ($<1000$):</strong> <strong>Laminar</strong> flow; emphasis on visualization.</li>
+                                <li><strong class="text-orange-600">Moderate $Re$:</strong> <strong>Transitional</strong> flow; instabilities appear.</li>
+                                <li><strong class="text-red-600">High $Re$ ($>5000$):</strong> <strong>Fully Turbulent</strong> flow; advanced diagnostics (PIV) required.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                 <div class="section-card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold mb-4">Instabilities and Bistability</h2>
+                    <p class="text-slate-600 mb-4">The jet structure is controlled by a competition between multiple instability mechanisms and non-linear effects:</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <h3 class="font-semibold text-lg mb-2">Three Core Instability Mechanisms</h3>
+                            <ul class="list-disc list-inside space-y-1 text-sm text-slate-700">
+                                <li><strong class="text-blue-600">Centrifugal Instability:</strong> Arises from the rotation itself (swirl).</li>
+                                <li><strong class="text-blue-600">Shear Layer Instability:</strong> (Kelvin-Helmholtz) Caused by the velocity difference between the jet and the ambient fluid.</li>
+                                <li><strong class="text-blue-600">Coriolis Force-induced:</strong> (Kelvin Waves) Relates to rotational effects, particularly observed in plug-flow jets (Liang & Maxworthy).</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <h3 class="font-semibold text-lg mb-2">Hysteresis and Bifurcation</h3>
+                            <p class="text-slate-600 text-sm">Flows exhibit <strong>Bistability</strong>, meaning two stable states (e.g., smooth vs. broken vortex) can coexist at the same Swirl Number. This leads to <strong>Hysteresis</strong> (Billant 1998), where the critical $S$ required to initiate breakdown is <em>different</em> from the $S$ needed to return to the smooth state (Douglas 2022).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold mb-4">Core References</h2>
+                    <p class="text-slate-600 leading-relaxed mb-4">Key papers that defined the physics and inspired the experimental design principles of this flow loop.</p>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Billant, P., Chomaz, J.-M., Huerre, P. (1998). Experimental observations of vortex breakdown structures. <em>J. Fluid Mech.</em></li>
+                        <li>Oberleithner, K., et al. (2011–2020). Work on Precessing Vortex Cores (PVC) and global instability in turbulent swirling jets.</li>
+                        <li>Douglas, E. & Lesshafft, L. (2022). Research on confinement effects, Coanda effect, and hysteresis in swirling jets.</li>
+                        <li>Liang, K. H. & Maxworthy, T. (2005, 2008). Work on plug-flow jets and Coriolis-induced Kelvin waves.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 2: Flow Loop Explorer -->
+            <section id="explorer" class="hidden space-y-8">
+                 <div class="section-card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold mb-2 text-center">Interactive Flow Loop Schematic & CAD Model</h2>
+                    <p class="text-slate-600 mb-8 text-center">Click on a component to learn its function. Click the <strong>Tank w/ Swirling Jet</strong> to toggle the embedded Onshape CAD viewer.</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2">
+                             <div id="diagram-container" class="relative p-4 bg-slate-100 rounded-lg h-full min-h-[500px] flex items-center justify-center">
+                                <!-- Onshape Iframe Placeholder (Hidden by default) -->
+                                <iframe id="onshape-iframe" class="onshape-frame hidden" allowfullscreen></iframe>
+
+                                <!-- Diagram built with divs (Visible by default) - NEW SCHEMATIC -->
+                                <div id="schematic-diagram" class="w-full h-full flex flex-col items-center justify-between relative">
+                                    <!-- Row 1: Top Flow Path -->
+                                    <div class="flow-block pump-color w-20 h-12 top-2 left-2 flow-component" data-info="pump1">Pump</div>
+                                    <div class="absolute w-[20px] h-1 bg-slate-500 top-8 left-[90px]"></div>
+                                    <div class="flow-block condition-color w-16 h-12 top-2 left-28 flow-component" data-info="filter">filter</div>
+                                    <div class="absolute w-[30px] h-1 bg-slate-500 top-8 left-[170px]"></div>
+                                    <div class="flow-block reservoir-color w-32 h-16 top-0 left-52 flow-component" data-info="buffer-reservoir">Buffer Reservoir</div>
+                                    <div class="absolute w-[30px] h-1 bg-slate-500 top-8 left-[355px]"></div>
+                                    <div class="flow-block pump-color w-20 h-12 rounded-full top-2 left-[400px] flow-component" data-info="valve-adj">adjustable flow valve</div>
+                                    <div class="absolute w-[30px] h-1 bg-slate-500 top-8 left-[480px]"></div>
+                                    <div class="flow-block condition-color w-36 h-16 top-0 right-2 flow-component" data-info="test-section" data-cad-toggle="true">Tank w/ Swirling Jet</div>
+
+                                    <!-- Flow from Buffer to Honeycomb/Swirler Splits -->
+                                    <div class="absolute w-1 h-32 bg-slate-500 top-[70px] left-[320px]"></div>
+                                    <div class="absolute w-16 h-1 bg-slate-500 top-[200px] left-[320px]"></div>
+
+                                    <!-- Honeycomb (Axial Path) -->
+                                    <div class="flow-block pump-color w-24 h-16 top-[170px] left-[400px] flow-component" data-info="honeycomb">Honeycomb</div>
+                                    <div class="absolute w-1 h-20 bg-slate-500 top-[192px] right-[275px]"></div>
+                                    <div class="absolute w-[20px] h-1 bg-slate-500 top-[220px] left-[498px]"></div>
+                                    <div class="absolute w-1 h-12 bg-slate-500 top-[220px] left-[517px]"></div>
+                                    
+                                    <!-- Swirler (Tangential Path) -->
+                                    <div class="flow-block pump-color w-24 h-16 top-[330px] left-[400px] flow-component" data-info="swirler">Swirler</div>
+                                    <div class="absolute w-1 h-20 bg-slate-500 top-[352px] right-[275px]"></div>
+                                    <div class="absolute w-[20px] h-1 bg-slate-500 top-[380px] left-[498px]"></div>
+                                    <div class="absolute w-1 h-12 bg-slate-500 top-[380px] left-[517px]"></div>
+
+                                    <!-- Contraction Zone (Combination Point) -->
+                                    <div class="flow-block condition-color w-32 h-20 top-[265px] left-[540px] flow-component" data-info="contraction-zone">Contraction Zone</div>
+                                    <div class="absolute w-1 h-12 bg-slate-500 top-[285px] left-[612px]"></div>
+                                    
+                                    <!-- Nozzle -->
+                                    <div class="flow-block pump-color w-24 h-16 top-[320px] right-2 flow-component" data-info="nozzle">Nozzle</div>
+                                    <div class="absolute w-1 h-16 bg-slate-500 top-[342px] right-[100px]"></div>
+
+                                    <!-- Row 3: Return Reservoirs (Left Side) -->
+                                    <div class="flow-block reservoir-color w-28 h-20 bottom-2 left-2 flow-component" data-info="return-res1">1st Return Reservoir ($\pm$ h)</div>
+                                    <div class="flow-block reservoir-color w-28 h-20 bottom-2 left-40 flow-component" data-info="return-res2">2nd Return Reservoir ($\pm$ h)</div>
+                                    
+                                    <!-- Overflow Valves -->
+                                    <div class="flow-block pump-color w-20 h-12 rounded-full bottom-36 left-20 flow-component" data-info="overflow-valve1">1st overflow valve</div>
+                                    <div class="flow-block pump-color w-20 h-12 rounded-full bottom-36 left-48 flow-component" data-info="overflow-valve2">2nd overflow valve</div>
+                                    
+                                    <!-- Return lines to Contraction/Honeycomb -->
+                                    <div class="absolute w-1 h-16 bg-slate-500 bottom-[140px] left-[200px]"></div>
+                                    <div class="absolute w-1 h-16 bg-slate-500 bottom-[140px] left-[280px]"></div>
+                                    <div class="absolute w-[60px] h-1 bg-slate-500 bottom-[200px] left-[200px]"></div>
+                                    <div class="absolute w-[60px] h-1 bg-slate-500 bottom-[200px] left-[280px]"></div>
+                                    
+                                </div>
+                            </div>
+                            <div class="mt-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg text-sm text-yellow-800">
+                                <strong>CAD Embed Instruction:</strong> To view the Test Section 3D model, replace the <code>src</code> attribute of the <code>onshape-iframe</code> element with your public Onshape embed URL (e.g., from the document's right-click menu &gt; Public Link &gt; Embed tab).
+                            </div>
+                        </div>
+                        <div class="flex flex-col space-y-4">
+                           <div id="test-section-info" class="info-card active section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">Tank w/ Swirling Jet (Test Section)</h3>
+                                <p class="text-slate-600 text-sm">This is the transparent observation chamber where the jet forms. It is designed to minimize optical distortion for PIV (Particle Image Velocimetry) and visualization studies. The jet exits the Nozzle (V<sub>in</sub>) and the flow returns (V<sub>out</sub>) to the reservoirs.</p>
+                           </div>
+                           <div id="pump1-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">Main Pump (Recirculation)</h3>
+                                <p class="text-slate-600 text-sm">This primary pump drives the recirculation of the fluid from the reservoirs back through the system. Its capacity determines the maximum overall flow rate, which directly influences the achievable <strong>Reynolds Number ($Re$)</strong> range.</p>
+                           </div>
+                             <div id="filter-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">Filter</h3>
+                                <p class="text-slate-600 text-sm">Ensures particle-free operation for accurate PIV measurements. Any dust or contaminants can skew velocity readings or interfere with laser light sheets.</p>
+                           </div>
+                           <div id="buffer-reservoir-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">Buffer Reservoir (Constant Head)</h3>
+                                <p class="text-slate-600 text-sm">A large reservoir placed high in the loop to absorb pump fluctuations and provide a stable hydrostatic head, ensuring a constant, non-pulsating flow to the flow conditioning section below.</p>
+                           </div>
+                            <div id="valve-adj-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">Adjustable Flow Valve</h3>
+                                <p class="text-slate-600 text-sm">Allows the operator to fine-tune the overall flow rate to the test tank, providing precise control over the final jet <strong>Reynolds Number ($Re$)</strong> before the fluid enters the test section.</p>
+                           </div>
+                             <div id="honeycomb-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">Honeycomb (Axial Flow Conditioning)</h3>
+                                <p class="text-slate-600 text-sm">Crucial element (like in <strong>Billant's setup (1998)</strong>) used for straightening the flow and breaking up large eddies. It ensures the flow entering the Contraction Zone is primarily <strong>axial ($V_a$)</strong> and uniform, reducing turbulence intensity before swirl is added.</p>
+                           </div>
+                             <div id="swirler-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">Swirler (Tangential Flow Generation)</h3>
+                                <p class="text-slate-600 text-sm">This component, likely a set of stationary vanes or tangential injection ports, is responsible for generating the <strong>tangential flow ($V_t$)</strong> component. It is the core mechanism for controlling the <strong>Swirl Number ($S$)</strong> along with the Honeycomb flow rate.</p>
+                           </div>
+                            <div id="contraction-zone-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">Contraction Zone (Flow Combination & Acceleration)</h3>
+                                <p class="text-slate-600 text-sm">Where the straightened <strong>axial flow ($V_a$)</strong> from the Honeycomb and the <strong>tangential flow ($V_t$)</strong> from the Swirler merge. The contraction accelerates the combined flow, further stabilizing it and ensuring a uniform profile before it enters the Nozzle.</p>
+                           </div>
+                           <div id="nozzle-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">Nozzle (Jet Formation)</h3>
+                                <p class="text-slate-600 text-sm">The final element that shapes and accelerates the swirling flow into the Test Tank (V<sub>in</sub>). The diameter of this nozzle ($D_N$) is the characteristic length scale used in the <strong>Reynolds Number</strong> calculation.</p>
+                           </div>
+                           <div id="return-res1-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">1st Return Reservoir ($\pm$ h)</h3>
+                                <p class="text-slate-600 text-sm">Part of the two-stage return system used to manage the flow that returns from the swirling jet tank (V<sub>out</sub>). Its height control ($\pm$ h) contributes to stabilizing the system's overall hydraulic head and pressure.</p>
+                           </div>
+                           <div id="return-res2-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">2nd Return Reservoir ($\pm$ h)</h3>
+                                <p class="text-slate-600 text-sm">The second stage of the return system, often used in conjunction with the overflow valves to maintain a highly stable, non-fluctuating water level, which is critical for consistent flow rates and PIV measurements.</p>
+                           </div>
+                           <div id="overflow-valve1-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">1st Overflow Valve</h3>
+                                <p class="text-slate-600 text-sm">These valves provide a path for excess fluid to return immediately to a lower tank, ensuring the associated reservoirs maintain a precise, constant water level, guaranteeing the hydrostatic pressure driving the flow remains stable.</p>
+                           </div>
+                           <div id="overflow-valve2-info" class="info-card section-card p-6">
+                                <h3 class="font-bold text-lg mb-2">2nd Overflow Valve</h3>
+                                <p class="text-slate-600 text-sm">Works with the 2nd Return Reservoir to manage fluid height. Utilizing overflow valves is a standard technique in precision fluid dynamics experiments to decouple pump instability from test section flow quality.</p>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Parameter Calculator -->
+            <section id="calculator" class="hidden space-y-8">
+                <div class="section-card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold text-center mb-2">Interactive Parameter Calculator</h2>
+                    <p class="text-slate-600 mb-8 text-center">Adjust the flow rates to see their effect on the governing parameters.</p>
+                    <div class="grid lg:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-6">
+                            <div>
+                                <label for="axial-flow" class="block font-medium text-slate-700">Axial Flow Rate ($Q_{ax}$ - from Honeycomb)</label>
+                                <input id="axial-flow" type="range" min="1" max="100" value="70" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                <div class="text-right text-sm text-slate-500 mt-1"><span id="axial-flow-value">70</span> L/min</div>
+                            </div>
+                            <div>
+                                <label for="tangential-flow" class="block font-medium text-slate-700">Tangential Flow Rate ($Q_{tan}$ - from Swirler)</label>
+                                <input id="tangential-flow" type="range" min="0" max="100" value="30" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                <div class="text-right text-sm text-slate-500 mt-1"><span id="tangential-flow-value">30</span> L/min</div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 pt-4">
+                               <div class="p-4 rounded-lg bg-slate-100 text-center">
+                                   <p class="text-sm text-slate-500">Reynolds Number ($Re$)</p>
+                                   <p id="re-value" class="text-2xl font-bold text-blue-600">0</p>
+                               </div>
+                               <div class="p-4 rounded-lg bg-slate-100 text-center">
+                                   <p id="s-label" class="text-sm text-slate-500">Swirl Number ($S$)</p>
+                                   <p id="s-value" class="text-2xl font-bold text-blue-600">0.00</p>
+                               </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="chart-container">
+                                <canvas id="parameterChart"></canvas>
+                            </div>
+                             <div class="mt-6 p-4 bg-slate-100 rounded-lg border border-slate-200">
+                                <h3 class="font-semibold text-slate-800">Underlying Calculations (Simplified)</h3>
+                                <p class="text-xs text-slate-600 mt-1 mb-2">This demo uses your core momentum and flow rate relationships for instantaneous feedback.</p>
+                                <ul class="list-disc list-inside space-y-1 text-sm text-slate-700">
+                                    <li><strong class="text-blue-600">Swirl Number (S):</strong> For this demo, we use a simplified flow rate ratio: $S \approx Q_{tan} / Q_{ax}$ (based on your momentum conservation notes, assuming equal areas).</li>
+                                    <li><strong class="text-blue-600">Reynolds Number (Re):</strong> Calculated using the total volumetric flow rate ($Q_{Total} = Q_{ax} + Q_{tan}$) to determine the average axial velocity ($V_{avg} = Q_{Total} / A_{Nozzle}$), then applying your formula: $Re = (\rho \cdot D_N \cdot V_{avg}) / \mu$.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- New Calculation Example Section -->
+                <div class="section-card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold mb-4">Step-by-Step Calculation Example</h2>
+                    <p class="text-slate-600 mb-6">Let's fix the flow rates to an example scenario to see the full calculation logic for a <strong>Transitional, Helical Flow Regime</strong> ($S \approx 0.7$, $Re \approx 11{,}000$).</p>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h3 class="font-bold text-lg mb-3">Example Input: $Q_{ax}=60 \text{ L/min}$, $Q_{tan}=40 \text{ L/min}$</h3>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Swirl Calculation -->
+                            <div>
+                                <h4 class="font-semibold text-blue-600 mb-2">Calculation for Swirl Number ($S$)</h4>
+                                <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+                                    <li>Determine Flow Rate Ratio: The simplified $S$ is the ratio of tangential to axial flow rate.
+                                        <div class="font-mono bg-white p-2 rounded mt-1">$S = Q_{tan} / Q_{ax}$</div>
+                                    </li>
+                                    <li>Substitute Values:
+                                        <div class="font-mono bg-white p-2 rounded mt-1">$S = 40 \text{ L/min} / 60 \text{ L/min}$</div>
+                                    </li>
+                                    <li><strong>Result:</strong>
+                                        <div class="font-bold text-base text-green-700"> $S = 0.67$ (Expected: Helical Instability)</div>
+                                    </li>
+                                </ol>
+                            </div>
+                            <!-- Reynolds Calculation -->
+                             <div>
+                                <h4 class="font-semibold text-blue-600 mb-2">Calculation for Reynolds Number ($Re$)</h4>
+                                <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700">
+                                    <li>Calculate Total Flow ($Q_{Total}$):
+                                        <div class="font-mono bg-white p-2 rounded mt-1">$Q_{Total} = 60 + 40 = 100 \text{ L/min}$</div>
+                                    </li>
+                                    <li>Convert to SI Units ($Q_{m^3/s}$): $100 \text{ L/min} / (60 \cdot 1000) = 0.001667 \text{ m}^3\text{/s}$.</li>
+                                    <li>Calculate Average Velocity ($V_{avg}$): Using $V_{avg} = Q_{Total} / A_{Nozzle}$ (where $A_{Nozzle} \approx 0.00196 \text{ m}^2$).
+                                        <div class="font-mono bg-white p-2 rounded mt-1">$V_{avg} = 0.001667 / 0.00196 \approx 0.85 \text{ m/s}$</div>
+                                    </li>
+                                    <li>Calculate $Re$: Using $Re = (\rho \cdot D_N \cdot V_{avg}) / \mu$ (where $\rho=997$, $D_N=0.05$, $\mu=8.9 \cdot 10^{-4}$).
+                                         <div class="font-mono bg-white p-2 rounded mt-1">$Re = \dfrac{997 \cdot 0.05 \cdot 0.85}{8.9\cdot10^{-4}} \approx 47500$</div>
+                                    </li>
+                                    <li><strong>Result:</strong>
+                                        <div class="font-bold text-base text-green-700"> $Re \approx 47{,}500$ (Expected: Fully Turbulent)</div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Calculation Example Section -->
+            </section>
+            
+            <!-- Section 4: Project Roadmap -->
+            <section id="roadmap" class="hidden">
+                 <div class="section-card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold text-center mb-8">Project Next Steps</h2>
+                    <div class="max-w-2xl mx-auto">
+                        <div class="timeline-item completed">
+                            <div class="timeline-marker"></div>
+                            <h3 class="font-bold text-lg">1. Finalize CAD & Calculations</h3>
+                            <p class="text-slate-600">High-priority task to confirm all geometric constraints and verify that the pump selections can achieve the target Re and S ranges.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <h3 class="font-bold text-lg">2. Manufacturing & Procurement</h3>
+                            <p class="text-slate-600">Machining of the custom acrylic test section and nozzle, and procurement of pumps, valves, and piping.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <h3 class="font-bold text-lg">3. Assembly & Verification</h3>
+                            <p class="text-slate-600">Construct the physical loop, perform rigorous leak testing, and calibrate all flow meters and sensors for accuracy.</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <h3 class="font-bold text-lg">4. Initial Testing & PIV</h3>
+                            <p class="text-slate-600">Commission the loop with the working fluid. Use Particle Image Velocimetry (PIV) to take baseline velocity measurements and validate that the calculated S and Re values match reality.</p>
+                        </div>
+                         <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <h3 class="font-bold text-lg">5. Feedback & Full Data Acquisition</h3>
+                            <p class="text-slate-600">Analyze initial results, incorporate feedback from mentors, and proceed with the full experimental test matrix.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = {
+                concepts: document.getElementById('concepts'),
+                explorer: document.getElementById('explorer'),
+                calculator: document.getElementById('calculator'),
+                roadmap: document.getElementById('roadmap')
+            };
+            const navButtons = document.querySelectorAll('.nav-button');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active button
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    // Hide all sections
+                    Object.values(sections).forEach(section => section.classList.add('hidden'));
+
+                    // Show the target section
+                    const sectionId = button.dataset.section;
+                    if (sections[sectionId]) {
+                        sections[sectionId].classList.remove('hidden');
+                        // Typeset any math in the newly shown section
+                        if (window.MathJax && MathJax.typesetPromise) {
+                          MathJax.typesetPromise([sections[sectionId]]).catch(()=>{/* ignore typeset errors */});
+                        }
+                    }
+                });
+            });
+
+            // Flow Loop Explorer Logic
+            const flowComponents = document.querySelectorAll('.flow-component');
+            const infoCards = document.querySelectorAll('.info-card');
+            const onshapeIframe = document.getElementById('onshape-iframe');
+            const schematicDiagram = document.getElementById('schematic-diagram');
+            let isCadVisible = false;
+
+            flowComponents.forEach(component => {
+                component.addEventListener('click', () => {
+                    const infoId = component.dataset.info + '-info';
+                    
+                    flowComponents.forEach(c => c.classList.remove('selected'));
+                    component.classList.add('selected');
+
+                    infoCards.forEach(card => {
+                        if (card.id === infoId) {
+                            card.classList.add('active');
+                            // Ensure MathJax renders the math inside this card
+                            if (window.MathJax && MathJax.typesetPromise) {
+                                MathJax.typesetPromise([card]).catch(()=>{/* ignore typeset errors */});
+                            }
+                        } else {
+                            card.classList.remove('active');
+                        }
+                    });
+
+                    // Toggle CAD view only if the Test Section is clicked
+                    if (component.dataset.cadToggle) {
+                        isCadVisible = !isCadVisible;
+                        if (isCadVisible) {
+                            // Replace the example URL with your actual Onshape Embed URL if desired
+                            onshapeIframe.src = "https://cad.onshape.com/documents/ff21711204d13f9c5a14d642/w/430d47d4e3e3b3c373a0e637/e/987114b301c23f46f3875a5e?renderMode=0&defaultView=front";
+                            onshapeIframe.classList.remove('hidden');
+                            schematicDiagram.classList.add('hidden');
+                            onshapeIframe.parentNode.classList.remove('bg-slate-100');
+                        } else {
+                            onshapeIframe.classList.add('hidden');
+                            schematicDiagram.classList.remove('hidden');
+                            onshapeIframe.parentNode.classList.add('bg-slate-100');
+                        }
+                    } else if (isCadVisible) {
+                         // Hide CAD if another component is clicked
+                         isCadVisible = false;
+                         onshapeIframe.classList.add('hidden');
+                         schematicDiagram.classList.remove('hidden');
+                         onshapeIframe.parentNode.classList.add('bg-slate-100');
+                    }
+                });
+            });
+
+            // Parameter Calculator Logic
+            const axialSlider = document.getElementById('axial-flow');
+            const tangentialSlider = document.getElementById('tangential-flow');
+            const axialValue = document.getElementById('axial-flow-value');
+            const tangentialValue = document.getElementById('tangential-flow-value');
+            const reValue = document.getElementById('re-value');
+            const sValue = document.getElementById('s-value');
+
+            // Constants for calculation (placeholders)
+            const DENSITY = 997; // kg/m^3 (water)
+            const VISCOSITY = 8.9e-4; // Pa*s (water)
+            const NOZZLE_DIAMETER = 0.05; // 50mm in meters
+            const NOZZLE_AREA = Math.PI * Math.pow(NOZZLE_DIAMETER / 2, 2);
+
+            // instantiate chart after Chart.js loads; Chart.js was loaded with defer
+            const ctx = document.getElementById('parameterChart').getContext('2d');
+            const parameterChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Axial Momentum', 'Tangential Momentum'],
+                    datasets: [{
+                        label: 'Relative Momentum Flux',
+                        data: [70, 30],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)', // blue
+                            'rgba(239, 68, 68, 0.7)'   // red
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Flow Rate (L/min)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: false
+                        }
+                    }
+                }
+            });
+
+            function updateCalculator() {
+                const qAxial = parseFloat(axialSlider.value);
+                const qTangential = parseFloat(tangentialSlider.value);
+
+                axialValue.textContent = qAxial.toFixed(0);
+                tangentialValue.textContent = qTangential.toFixed(0);
+
+                // 1. Calculate Reynolds Number (Re)
+                // Total Volumetric Flow Rate (Q_Total = Q_ax + Q_tan)
+                const qTotal_m3s = (qAxial + qTangential) / (60 * 1000); // L/min -> m^3/s
+                
+                // Average Velocity (V_avg = Q_Total / A_Nozzle)
+                const avgVelocity = qTotal_m3s / NOZZLE_AREA;
+
+                // Re calculation: Re = (rho * V_avg * D_Nozzle) / mu
+                const re = (DENSITY * avgVelocity * NOZZLE_DIAMETER) / VISCOSITY;
+                reValue.textContent = re.toLocaleString('en-US', { maximumFractionDigits: 0 });
+
+                // 2. Calculate Swirl Number (S)
+                // Simplified S: S is proportional to the ratio of flow rates when geometry is fixed.
+                // S ≈ Q_tan / Q_ax (This reflects the relative strength of the tangential injection)
+                let s;
+                if (qAxial === 0) {
+                    s = (qTangential === 0) ? 0 : 9.99; // Cap at a very high number if only tangential flow
+                } else {
+                    s = qTangential / qAxial;
+                }
+                sValue.textContent = s.toFixed(2);
+                
+                // Highlight critical S ranges (based on Billant S_crit ~1.3 and Oberleithner S_PVC ~0.6)
+                if (s >= 1.3) {
+                     sValue.classList.add('text-red-600');
+                     sValue.classList.remove('text-blue-600', 'text-orange-600');
+                } else if (s >= 0.6) {
+                     sValue.classList.add('text-orange-600');
+                     sValue.classList.remove('text-red-600', 'text-blue-600');
+                }
+                else {
+                    sValue.classList.remove('text-red-600', 'text-orange-600');
+                    sValue.classList.add('text-blue-600');
+                }
+
+                // Update chart
+                parameterChart.data.datasets[0].data = [qAxial, qTangential];
+                parameterChart.update();
+            }
+
+            axialSlider.addEventListener('input', updateCalculator);
+            tangentialSlider.addEventListener('input', updateCalculator);
+
+            // Initial calculation
+            updateCalculator();
+
+            // typeset initial math after MathJax has loaded (if available)
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(()=>{/* ignore initial typeset errors */});
+            }
+        });
+    </script>
+</body>
+</html>
