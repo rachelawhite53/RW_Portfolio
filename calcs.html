@@ -768,8 +768,51 @@ function updateCalculatorUI(){
 axial.addEventListener('input', updateCalculatorUI);
 tang.addEventListener('input', updateCalculatorUI);
 
-// sync manual inputs to sliders when user clicks compute
+// --- Fix: Add listeners for geometry and manual flow inputs to ensure immediate UI updates ---
+
+// Listener function for geometry changes: re-runs calculator with new geometry
+function handleGeometryChange() {
+  // Sync the manual flow inputs to the current slider values before updating
+  // This ensures the updateCalculatorUI uses the flow from the sliders/UI state
+  qaxEl.value = axial.value;
+  qtanEl.value = tangential.value;
+  
+  updateCalculatorUI();
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+// Listener function for manual flow input changes: updates sliders and calculator
+function handleManualFlowChange() {
+  const qAx = Number(qaxEl.value) || 0;
+  const qTan = Number(qtanEl.value) || 0;
+  
+  // Set sliders to the new manual input values
+  axial.value = qAx;
+  tang.value = qTan;
+  
+  updateCalculatorUI();
+}
+
+// Attach listeners to geometry inputs (dn, d1, nInlets, h, b)
+dnEl.addEventListener('input', handleGeometryChange);
+d1El.addEventListener('input', handleGeometryChange);
+nInletsEl.addEventListener('input', handleGeometryChange);
+hEl.addEventListener('input', handleGeometryChange);
+bEl.addEventListener('input', handleGeometryChange);
+
+// Attach listeners to manual flow inputs (qax, qtan)
+qaxEl.addEventListener('input', handleManualFlowChange);
+qtanEl.addEventListener('input', handleManualFlowChange);
+
+// The compute button is now mainly for explicit computation/share link update
 computeBtn.addEventListener('click', () => {
+  // Sync manual inputs to sliders and update UI (this mimics the handleManualFlowChange logic)
+  axial.value = Number(qaxEl.value) || 0;
+  tang.value = Number(qtanEl.value) || 0;
+  
+  updateCalculatorUI();
+
+  // update share link (part of original compute logic)
   const qAx = Number(qaxEl.value) || 0;
   const qTan = Number(qtanEl.value) || 0;
   const dn_mm = Number(dnEl.value) || 26;
@@ -777,14 +820,7 @@ computeBtn.addEventListener('click', () => {
   const nInlets = Number(nInletsEl.value) || 4;
   const h_mm = Number(hEl.value) || 10;
   const b_mm = Number(bEl.value) || 5.276;
-
-  // set sliders -> update UI
-  axial.value = qAx;
-  tang.value = qTan;
-
-  updateCalculatorUI();
-
-  // update share link
+  
   const url = new URL(location.href.split('#')[0]);
   url.searchParams.set('qax', qAx); url.searchParams.set('qtan', qTan);
   url.searchParams.set('dn_mm', dn_mm); url.searchParams.set('d1_mm', d1_mm);
