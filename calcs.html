@@ -646,7 +646,7 @@
 
 // --- Global variables ---
 const RHO = 996.3;   // kg/m^3
-const MU  = 8.345e-4; // Pa·s  (N·s/m²) //james
+const MU  = 8.345e-4; // Pa·s  (N·s/m²) 
 const axial=document.getElementById('axial'), tang=document.getElementById('tangential');
 const axialVal=document.getElementById('axialVal'), tanVal=document.getElementById('tanVal');
 const Sdisp=document.getElementById('S'), Redisp=document.getElementById('Re'), QtotDisp=document.getElementById('Qtot');
@@ -832,7 +832,7 @@ computeBtn.addEventListener('click', () => {
 
 // initialize
 (function init(){
- axial.value=18; tang.value=8;
+ axial.value=5; tang.value=5;
  dnEl.value=26; d1El.value=65; nInletsEl.value=4; hEl.value=10; bEl.value=5.276;
  qaxEl.value=Number(axial.value); qtanEl.value=Number(tang.value);
  updateCalculatorUI();
@@ -842,7 +842,7 @@ computeBtn.addEventListener('click', () => {
 applyReBtn.addEventListener('click', () => {
   const targetRe = Number(targetReEl.value);
   const dn_mm = Number(dnEl.value) || 26;
-  // compute geometry A_n using current dn
+  // compute geometry A_n using current Dn
   const dN_m = dn_mm*MM_TO_M;
   const A_n = Math.PI*Math.pow(dN_m/2,2);
   if (!Number.isFinite(targetRe) || targetRe <= 0) {
