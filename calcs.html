@@ -318,6 +318,17 @@
         </div>
       </div>
 
+      <div class="stats" style="margin-top:16px; grid-template-columns: repeat(2, 1fr);">
+        <div class="stat">
+          <div class="small">Nozzle Area (A<sub>N</sub>)</div>
+          <div id="AN" class="num" style="color:var(--blue); font-size:24px;">0 mm²</div>
+        </div>
+        <div class="stat">
+          <div class="small">Total Inlet Area (A<sub>2</sub>)</div>
+          <div id="A2" class="num" style="color:var(--orange); font-size:24px;">0 mm²</div>
+        </div>
+      </div>
+
       <div style="margin-top:28px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
         <div>
           <h4 style="text-align:center; margin-bottom:12px; font-size:16px;">Parametric Variation: S & Re vs Q_ax (Q_tan fixed at <span id="qtanLabel">0</span> GPM)</h4>
@@ -483,6 +494,8 @@ const tanVal = document.getElementById('tanVal');
 const Sdisp = document.getElementById('S');
 const Redisp = document.getElementById('Re');
 const QtotDisp = document.getElementById('Qtot');
+const ANdisp = document.getElementById('AN');
+const A2disp = document.getElementById('A2');
 
 const qaxEl = document.getElementById('qax');
 const qtanEl = document.getElementById('qtan');
@@ -724,6 +737,11 @@ function updateCalculatorUI() {
   Sdisp.textContent = isFinite(res.S) ? res.S.toFixed(3) : '∞';
   QtotDisp.textContent = res.qTotGpm.toFixed(2) + ' GPM';
   Redisp.textContent = Math.round(res.Re).toLocaleString();
+  
+  const A_N_mm2 = res.A_n * 1e6;
+  const A_2_mm2 = res.A2 * 1e6;
+  ANdisp.textContent = A_N_mm2.toFixed(2) + ' mm²';
+  A2disp.textContent = A_2_mm2.toFixed(2) + ' mm²';
 
   document.getElementById('qaxLabel').textContent = res.qAx.toFixed(1);
   document.getElementById('qtanLabel').textContent = res.qTan.toFixed(1);
