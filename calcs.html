@@ -282,12 +282,7 @@
 
     <div class="card" id="calculatorCard">
       <div>
-        <h1>Swirling Jet — Parameter Calculator</h1>
-        <div class="small">Adjust axial and tangential flow rates to see $S$ (Swirl Number) and $Re$ (Reynolds Number). Units: GPM (flows) — geometry inputs in <strong>mm</strong>.</div>
-        <div class="correction-note">
-          <strong>✓ Physics Implementation</strong>
-          Using conservation of angular momentum: $\overline{V}_{\theta,N} = \frac{3n D_2 \overline{V}_{\theta,2}}{\pi D_N^2}$
-        </div>
+        <h1>Swirling Jet: Parameter Calculator</h1>
       </div>
 
       <div class="row">
@@ -331,11 +326,11 @@
 
       <div style="margin-top:28px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
         <div>
-          <h4 style="text-align:center; margin-bottom:12px; font-size:16px;">Parametric Variation: S & Re vs Q_ax (Q_tan fixed at <span id="qtanLabel">0</span> GPM)</h4>
+          <h4 style="text-align:center; margin-bottom:12px; font-size:16px;">Parametric Variation: S & Re vs Qax (Qtan fixed at <span id="qtanLabel">0</span> GPM)</h4>
           <canvas id="chartD2"></canvas>
         </div>
         <div>
-          <h4 style="text-align:center; margin-bottom:12px; font-size:16px;">Parametric Variation: S & Re vs Q_tan (Q_ax fixed at <span id="qaxLabel">0</span> GPM)</h4>
+          <h4 style="text-align:center; margin-bottom:12px; font-size:16px;">Parametric Variation: S & Re vs Qtan (Qax fixed at <span id="qaxLabel">0</span> GPM)</h4>
           <canvas id="chartDN"></canvas>
         </div>
       </div>
@@ -344,7 +339,7 @@
     <div class="card" id="stepsCard">
       <div>
         <h1>Manual Input — Targets & Geometry</h1>
-        <div class="small">Enter specific flow rates and geometry parameters. These inputs are required to compute swirl number and Reynolds number.</div>
+        <div class="small">Enter specific flow rates and geometry parameters as needed.</div>
       </div>
 
       <div class="input-grid">
