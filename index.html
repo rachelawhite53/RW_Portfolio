@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>This is Rachel White</title>
+<title>Rachel White | Engineering Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(-45deg, #667eea, #764ba2, #3b82f6, #a855f7);
+    /* Adjusted gradient for a slightly more modern, deep aerospace feel */
+    background: linear-gradient(-45deg, #4f46e5, #7c3aed, #2563eb, #9333ea);
     background-size: 400% 400%;
     animation: gradientShift 12s ease infinite;
     color: #fff;
@@ -20,6 +21,7 @@
     margin: 0;
     text-align: center;
     overflow: hidden;
+    padding: 20px; /* Added padding so text doesn't hit edges on mobile */
   }
 
   @keyframes gradientShift {
@@ -29,16 +31,28 @@
   }
 
   h1 {
-    font-size: 44px;
+    font-size: 48px; /* Slightly larger */
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em; /* Makes large text look cleaner */
     text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  h2 {
+    font-size: 20px; /* New sub-header style */
+    font-weight: 600;
+    color: #e0e7ff;
+    margin-top: 0;
+    margin-bottom: 24px;
+    opacity: 0.9;
   }
 
   p {
     font-size: 18px;
+    line-height: 1.6; /* Better readability */
     color: #e0e7ff;
-    margin-bottom: 36px;
+    margin-bottom: 40px;
+    max-width: 600px; /* Prevents line length from getting too wide to read */
   }
 
   a.btn {
@@ -46,17 +60,17 @@
     background: #fff;
     color: #4f46e5;
     font-weight: 600;
-    padding: 14px 32px;
-    border-radius: 12px;
+    padding: 16px 36px;
+    border-radius: 50px; /* Pill shape is trendier currently */
     text-decoration: none;
     transition: all 0.25s ease;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
   }
 
   a.btn:hover {
-    background: #e0e7ff;
+    background: #f8fafc;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
   }
 
   a.link {
@@ -65,9 +79,11 @@
     color: #c7d2fe;
     font-size: 15px;
     text-decoration: none;
+    transition: color 0.2s;
   }
 
   a.link:hover {
+    color: #fff;
     text-decoration: underline;
   }
 
@@ -76,15 +92,25 @@
     bottom: 24px;
     font-size: 13px;
     color: #c7d2fe;
+    opacity: 0.7;
   }
 </style>
 </head>
 <body>
-  <h1>Hi! This is Rachel White...</h1>
-  <p>Engineer • Designer • Creator</p>
 
-  <a href="front.html" class="btn">Explore my Current Project</a>
+  <h1>Hi, I'm Rachel White!</h1>
+  
+  <h2>I am an aspiring Aerospace Engineer specializing in sustainable aviation and rocketry.</h2>
+  
+  <p>
+    My goal is to join a mission-driven team where I can contribute immediately 
+    and grow into a full-time engineer.
+  </p>
+  
+  <a href="front.html" class="btn">View My Current Project</a>
+  
   <a href="https://www.linkedin.com/in/rachelwhite10/" target="_blank" class="link">Connect on LinkedIn</a>
+  <a href="mailto:rachelawhite53@gmail.com" class="link">Get in Touch</a>
 
   <footer>© <span id="year"></span> Rachel White</footer>
 

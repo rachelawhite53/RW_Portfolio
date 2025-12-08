@@ -12,6 +12,7 @@
     --text-main: #eee;
     --text-muted: #a8c1dd;
     --accent: #0ea5e9;
+    --accent-hover: #0284c7;
   }
 
   body{
@@ -20,16 +21,45 @@
     background: var(--bg-dark);
     color: var(--text-main);
     display:flex;
-    justify-content:center;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
+    min-height: 100vh;
   }
-  
+
+  /* --- Navigation Bar (Dark Mode) --- */
+  .nav-bar {
+    background: rgba(51, 51, 51, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 12px 24px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    margin-bottom: 24px;
+    border: 1px solid #444;
+  }
+
+  .nav-bar a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .nav-bar a:hover { color: #fff; }
+  .nav-bar a.active { color: var(--accent); font-weight: 700; }
+
+  /* --- Main Layout --- */
   .wrap{
     width:100%;
     max-width:1400px;
     display:flex;
     gap:20px;
     align-items: flex-start;
+    height: 80vh;
   }
   
   /* Viewer Container */
@@ -40,7 +70,7 @@
     overflow:hidden;
     background:#444;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    height: 80vh; /* Taller view */
+    height: 100%;
   }
   
   model-viewer{
@@ -48,11 +78,13 @@
     height:100%;
     display:block;
     background:#444;
+    /* Fixes blurry textures on some high-DPI screens */
+    --poster-color: transparent;
   }
   
   /* Sidebar Controls */
   .controls{
-    width:320px;
+    width:300px;
     background: var(--panel-bg);
     border-radius:16px;
     padding:20px;
@@ -60,6 +92,8 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    overflow-y: auto;
+    max-height: 100%;
   }
   
   .controls h3{ margin:0; color:#fff; font-size: 18px; }
@@ -70,7 +104,7 @@
   }
   .control-group:last-child { border-bottom: none; }
   
-  label{ display:block; font-size:12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  label{ display:block; font-size:12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
   
   select, input[type=color], button {
     width:100%;
@@ -80,7 +114,7 @@
     background:#222;
     color:#fff;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 8px;
     cursor: pointer;
     transition: all 0.2s;
@@ -88,6 +122,23 @@
 
   select:hover, button:hover { border-color: var(--accent); }
   
+  /* Model Selection Buttons */
+  .model-btn {
+    text-align: left;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .model-btn.active-model {
+    border-color: var(--accent);
+    background: rgba(14, 165, 233, 0.1);
+    color: var(--accent);
+  }
+
   /* Primary Button Style */
   button.primary {
     background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
@@ -117,17 +168,26 @@
     color: var(--accent);
     text-align: center;
     margin-top: 4px;
+    min-height: 18px;
   }
   
   /* Responsive */
   @media (max-width: 800px) {
-    .wrap { flex-direction: column; }
+    .wrap { flex-direction: column; height: auto; }
     .viewerBox { height: 50vh; }
-    .controls { width: 100%; }
+    .controls { width: 100%; max-height: none; }
+    .nav-bar { flex-wrap: wrap; }
   }
 </style>
 </head>
 <body>
+
+<div class="nav-bar">
+  <a href="loop.html">Flow Loop Explorer</a>
+  <a href="calcs.html">Swirl Calculator</a>
+  <a href="swirler.html" class="active">3D Model</a>
+  <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project" target="_blank">Project Timeline</a>
+</div>
 
 <div class="wrap">
   <div class="viewerBox" id="viewerBox">
@@ -140,7 +200,9 @@
       camera-controls 
       auto-rotate 
       rotation-per-second="30deg" 
-      shadow-intensity="1"
+      shadow-intensity="1.5" 
+      shadow-softness="0.1"
+      exposure="1.3"
       camera-orbit="45deg 55deg 105%"
     ></model-viewer>
   </div>
@@ -148,19 +210,26 @@
   <div class="controls">
     
     <div class="control-group">
-      <h3>Model Selection</h3>
-      <div class="status" id="status">Ready</div>
+      <h3>Model Viewer</h3>
+      <div class="status" id="status">Swirler Loaded</div>
     </div>
 
     <div class="control-group">
-      <label>Choose File</label>
-      <select id="modelSel">
-        <option value="./swirler.gltf">Swirler (Main Component)</option>
-        <option value="./assembly1.gltf">Assembly Configuration 1</option>
-        <option value="./assembly2.gltf">Assembly Configuration 2</option>
-        <option value="./assembly3.gltf">Assembly Configuration 3</option>
-      </select>
-      <button id="resetBtn">Reset Camera View</button>
+      <label>Select Component</label>
+      <button class="model-btn active-model" onclick="loadModel(this, './swirler.gltf')">
+        Swirler Only <span>●</span>
+      </button>
+      <button class="model-btn" onclick="loadModel(this, './assembly1.gltf')">
+        Assembly Config 1 <span>○</span>
+      </button>
+      <button class="model-btn" onclick="loadModel(this, './assembly2.gltf')">
+        Assembly Config 2 <span>○</span>
+      </button>
+      <button class="model-btn" onclick="loadModel(this, './assembly3.gltf')">
+        Assembly Config 3 <span>○</span>
+      </button>
+      
+      <button id="resetBtn" style="margin-top:12px">Reset Camera View</button>
     </div>
 
     <div class="control-group">
@@ -194,7 +263,6 @@
 
 <script>
 const mv = document.getElementById('mv');
-const modelSel = document.getElementById('modelSel');
 const resetBtn = document.getElementById('resetBtn');
 const envSel = document.getElementById('envSel');
 const colorPicker = document.getElementById('colorPicker');
@@ -209,20 +277,27 @@ const viewerBox = document.getElementById('viewerBox');
 let materialsReady = false;
 let currentMaterials = [];
 
-// 1. Handle Model Switching
-modelSel.addEventListener('change', () => {
-  const file = modelSel.value;
-  status.textContent = 'Loading ' + file + '...';
-  // Reset dimensions display while loading
+// 1. Function to Load Models via Buttons
+window.loadModel = function(btn, file) {
+  // Update UI classes
+  document.querySelectorAll('.model-btn').forEach(b => {
+    b.classList.remove('active-model');
+    b.querySelector('span').textContent = '○';
+  });
+  btn.classList.add('active-model');
+  btn.querySelector('span').textContent = '●';
+
+  // Load Model
+  status.textContent = 'Loading...';
   dimX.textContent = '...';
   dimY.textContent = '...';
   dimZ.textContent = '...';
   mv.src = file;
-});
+};
 
 // 2. Handle Model Loaded Event (Dimensions & Materials)
 mv.addEventListener('load', () => {
-  status.textContent = 'Model Loaded';
+  status.textContent = 'Model Ready';
   
   // -- Material Setup --
   try {
@@ -236,7 +311,6 @@ mv.addEventListener('load', () => {
   } catch(e) { materialsReady = false; }
 
   // -- Dimension Calculation --
-  // We use getDimensions() which handles Assemblies (multiple meshes) correctly
   try {
     const dim = mv.getDimensions(); // returns object {x, y, z} in meters
     dimX.textContent = dim.x.toFixed(4);

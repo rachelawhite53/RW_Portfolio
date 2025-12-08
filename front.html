@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Swirling Jet Experiment</title>
+  <title>Resources</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -56,16 +56,43 @@
       padding: 24px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
-    .diagram {
-      text-align: center;
-      margin-top: 10px;
+    .content h2 {
+      color: #667eea;
+      margin-top: 0;
     }
-    .diagram img {
-      max-width: 48%;
-      margin: 1%;
+    .content h3 {
+      color: #764ba2;
+      margin-top: 30px;
+      margin-bottom: 12px;
+    }
+    .content ul {
+      line-height: 1.8;
+    }
+    .content a {
+      color: #667eea;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .content a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+    .presentation-link {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px 24px;
       border-radius: 10px;
-      border: 2px solid #e0e7ff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: inline-block;
+      margin: 20px 0;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+      transition: all 0.2s;
+    }
+    .presentation-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(102,126,234,0.4);
+      text-decoration: none;
     }
     footer {
       text-align: center;
@@ -74,56 +101,46 @@
       font-size: 13px;
     }
     @media (max-width: 768px) {
-      .diagram img { max-width: 96%; }
       nav a { font-size: 14px; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Jet Flow Experiment</h1>
+    <h1>Resources</h1>
   </header>
 
   <nav>
     <a href="loop.html">Flow Loop Explorer</a>
     <a href="calcs.html">Swirl Calculator</a>
-    <a href="swirler.html">3D Model: Model-viewer</a>
-    <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project" target="_blank">Project Timeline: Trello</a>
+    <a href="swirler.html">3D Model</a>
+    <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project" target="_blank">Project Timeline</a>
   </nav>
 
   <div class="content">
-      <h2>Resources Utilized During this Project</h2>
-      <p>This project draws inspiration from both experimental and computational research on swirling jets, as well as modern web visualization frameworks.</p>
-    <h3>Design Inspiration</h3>
-        <ul>
-     <li><strong>Billant, P., Chomaz, J.-M., & Huerre, P. (1998).</strong> 
-      <em>Experimental observations of vortex breakdown structures.</em> 
-      <em>Journal of Fluid Mechanics</em>. — Guided the general flow loop design and swirling jet principles.
-    </li>
-    <li><strong>Oberleithner, K. et al. (2011–2020).</strong> 
-      Research on <em>Precessing Vortex Cores (PVC)</em> and global instability in turbulent swirling jets. — Provided swirler inspiration and other insights.
-    </li>
-  </ul>
-   <h3>Additional Sources</h3> 
-   <li><strong>Douglas, E. & Lesshafft, L. (2022).</strong> 
-      <em>Confinement effects and bistability in laminar swirling jets.</em> 
-    </li>
-    <li><strong>Liang, K. H. & Maxworthy, T. (2005, 2008).</strong> 
-      <em>Instability modes and ambient effects in plug-flow swirling jets.</em> 
-    </li>
-    <li><strong>Gallaire, F., Rott, S., & Chomaz, J.-M. (2004).</strong> 
-      <em>Forced oscillations and instability response in swirling jets.</em>
-    </li>
-  <h3>Digital Tools & Libraries</h3>
-  <ul>
-    <li><a href="https://modelviewer.dev/" target="_blank" rel="noopener">Model Viewer</a> — For rendering interactive <strong>3D CAD models (glTF)</strong> in the browser.</li>
-    <li><a href="https://www.mathjax.org/" target="_blank" rel="noopener">MathJax</a> — For rendering <strong>LaTeX-style equations</strong> like S and Re directly in HTML.</li>
-    <li><a href="https://developer.atlassian.com/cloud/trello/guides/embedding/embedding-boards/" target="_blank" rel="noopener">Trello Embedding Guide</a> — Used to <strong>embed the project board</strong> and task management panel.</li>
-  </ul>
+    <h2>Project Resources</h2>
+    
+    <!-- Add your PDF link here -->
+    <a href="YOUR_PDF_LINK_HERE.pdf" class="presentation-link" target="_blank">📄 View Project Presentation (PDF)</a>
+
+    <h3>Key Research</h3>
+    <ul>
+      <li><strong>Billant, Chomaz & Huerre (1998)</strong>: Vortex breakdown structures in swirling jets</li>
+      <li><strong>Oberleithner et al. (2011–2020)</strong>: Precessing vortex cores and global instability</li>
+      <li><strong>Douglas & Lesshafft (2022)</strong>: Confinement effects and bistability</li>
+      <li><strong>Liang & Maxworthy (2005, 2008)</strong>: Instability modes in swirling jets</li>
+    </ul>
+
+    <h3>Digital Tools</h3>
+    <ul>
+      <li><a href="https://modelviewer.dev/" target="_blank">Model Viewer</a>: Interactive 3D CAD rendering</li>
+      <li><a href="https://www.mathjax.org/" target="_blank">MathJax</a>: LaTeX equation rendering</li>
+      <li><a href="https://developer.atlassian.com/cloud/trello/" target="_blank">Trello</a>: Project board embedding</li>
+    </ul>
   </div>
 
-  <footer>© 
-    <emph> Rachel White, </emph> Duke University Pratt School of Engineering, 2025.
+  <footer>
+    © Rachel White, Duke University Pratt School of Engineering, 2025.
   </footer>
 </body>
 </html>
