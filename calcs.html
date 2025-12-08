@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Swirl — Calculator & Step-by-Step (GPM) — geometry in mm</title>
+<title>Swirling Jet Calculator — Flow Analysis Tool</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -250,6 +250,23 @@
   .controls {
     display: flex; gap: 12px; align-items: center; margin-top: 20px;
   }
+
+  .correction-note {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
+    padding: 16px;
+    border-radius: 12px;
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .correction-note strong {
+    color: #92400e;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
   
   @media (max-width: 768px) {
     .wrap { padding: 20px 16px; }
@@ -267,6 +284,10 @@
       <div>
         <h1>Swirling Jet — Parameter Calculator</h1>
         <div class="small">Adjust axial and tangential flow rates to see $S$ (Swirl Number) and $Re$ (Reynolds Number). Units: GPM (flows) — geometry inputs in <strong>mm</strong>.</div>
+        <div class="correction-note">
+          <strong>✓ Physics Implementation</strong>
+          Using conservation of angular momentum: $\overline{V}_{\theta,N} = \frac{3n D_2 \overline{V}_{\theta,2}}{\pi D_N^2}$
+        </div>
       </div>
 
       <div class="row">
@@ -297,15 +318,22 @@
         </div>
       </div>
 
-      <div style="margin-top:28px;">
-        <canvas id="barChart"></canvas>
+      <div style="margin-top:28px; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div>
+          <h4 style="text-align:center; margin-bottom:12px; font-size:16px;">Parametric Variation: S & Re vs Q_ax (Q_tan fixed at <span id="qtanLabel">8</span> GPM)</h4>
+          <canvas id="chartD2"></canvas>
+        </div>
+        <div>
+          <h4 style="text-align:center; margin-bottom:12px; font-size:16px;">Parametric Variation: S & Re vs Q_tan (Q_ax fixed at <span id="qaxLabel">18</span> GPM)</h4>
+          <canvas id="chartDN"></canvas>
+        </div>
       </div>
     </div>
 
     <div class="card" id="stepsCard">
       <div>
         <h1>Manual Input — Targets & Geometry</h1>
-        <div class="small">Fine-tune inputs or use the values from the calculator. Geometry inputs are required to compute $S$ physically.</div>
+        <div class="small">Enter specific flow rates and geometry parameters. These inputs are required to compute swirl number and Reynolds number.</div>
       </div>
 
       <div class="input-grid">
@@ -347,8 +375,7 @@
       </div>
 
       <div class="controls" style="margin-top:18px;">
-        <button id="compute" class="btn">Update & Share</button>
-        <a id="shareLink" class="link" href="#" title="Copies the shareable URL">📋 Shareable link</a>
+        <button id="compute" class="btn">Update Calculations</button>
       </div>
 
       <hr />
@@ -359,9 +386,9 @@
           <div class="analysis-section">
             <div class="section-header">
               <span class="section-number">A</span>
-              <h4>Target Reynolds → compute $Q_{ax}$</h4>
+              <h4>Target Reynolds → Compute $Q_{ax}$</h4>
             </div>
-            <p>Enter a target Reynolds (using nozzle diameter). This computes the axial flowrate (GPM) required.</p>
+            <p>Enter a target Reynolds number based on nozzle diameter. The calculator will determine the required axial flow rate (GPM).</p>
             <div style="display:grid; gap:8px; margin-top:8px;">
               <input id="targetRe" type="number" placeholder="e.g. 20000" step="1" />
               <div style="display:flex; gap:8px;">
@@ -374,9 +401,9 @@
           <div class="analysis-section highlight">
             <div class="section-header">
               <span class="section-number">B</span>
-              <h4>Target Swirl (S)</h4>
+              <h4>Target Swirl Number (S)</h4>
             </div>
-            <p>Enter a target S and choose whether to solve for Q<sub>tan</sub> (given Q<sub>ax</sub>) or Q<sub>ax</sub> (given Q<sub>tan</sub>).</p>
+            <p>Enter a target swirl number and select whether to solve for Q<sub>tan</sub> (given Q<sub>ax</sub>) or Q<sub>ax</sub> (given Q<sub>tan</sub>). The calculator will determine the required flow rate.</p>
             <div style="display:grid; gap:8px; margin-top:8px;">
               <input id="targetS" type="number" placeholder="e.g. 0.8" step="0.001" />
               <label style="font-size:13px; font-weight:600; margin-top:6px;">Solve for</label>
@@ -397,25 +424,26 @@
       <hr />
 
       <div class="math-notes">
-        <div style="text-align:center; margin-bottom:16px; color:var(--text-secondary); font-weight:600; font-size:14px; text-transform:uppercase; letter-spacing:1px;">
-          Master Swirl Equation
+        <div style="text-align:center; margin-bottom:16px; color:var(--text-secondary); font-weight:600; font-size:14px; text-transform:uppercase; letter-spacing:1px;"> 
+          Governing Equation
         </div>
         <div class="eq key-eq" style="text-align:center; font-size:1.3em; padding:32px;">
             \[ \overline{V}_{\theta,N} = \dfrac{3n D_2 \overline{V}_{\theta,2}}{\pi D_N^2} \]
         </div>
+        <p style="text-align:center; color:var(--text-secondary); font-size:13px; margin-top:16px;">
+          Derived from conservation of angular momentum between the swirler inlet and nozzle exit.
+        </p>
       </div>
 
     </div>
   </div>
 
 <script>
-// --- Global variables ---
-const RHO = 996.3;   // kg/m^3
-const MU  = 8.345e-4; // Pa·s 
+const RHO = 996.3;
+const MU  = 8.345e-4;
 const GPM_TO_M3S = 6.30902e-5;
 const MM_TO_M = 0.001;
 
-// Elements
 const axial = document.getElementById('axial');
 const tang = document.getElementById('tangential');
 const axialVal = document.getElementById('axialVal');
@@ -424,17 +452,14 @@ const Sdisp = document.getElementById('S');
 const Redisp = document.getElementById('Re');
 const QtotDisp = document.getElementById('Qtot');
 
-// Manual Inputs
 const qaxEl = document.getElementById('qax');
 const qtanEl = document.getElementById('qtan');
 const dnEl = document.getElementById('dn');
-const d1El = document.getElementById('d1'); // D2 in UI
+const d1El = document.getElementById('d1');
 const nInletsEl = document.getElementById('nInlets');
 const hEl = document.getElementById('h');
 const bEl = document.getElementById('b');
-const shareLink = document.getElementById('shareLink');
 
-// Target Elements
 const targetReEl = document.getElementById('targetRe');
 const applyReBtn = document.getElementById('applyRe');
 const reResult = document.getElementById('reResult');
@@ -445,31 +470,81 @@ const applySBtn = document.getElementById('applyS');
 const previewSBtn = document.getElementById('previewS');
 const sResult = document.getElementById('sResult');
 
-// Chart Setup
-const ctx = document.getElementById('barChart').getContext('2d');
-const barChart = new Chart(ctx, {
-  type: 'bar',
+const ctxD2 = document.getElementById('chartD2').getContext('2d');
+const ctxDN = document.getElementById('chartDN').getContext('2d');
+
+const chartD2 = new Chart(ctxD2, {
+  type: 'line',
   data: {
-    labels: ['Axial (GPM)','Tangential (GPM)'],
-    datasets: [{
-      data: [18, 8],
-      backgroundColor: ['#3b82f6','#f97316'],
-      borderRadius: 8,
-      borderSkipped: false,
-    }]
+    labels: [],
+    datasets: [
+      {
+        label: 'Q_ax',
+        data: [],
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderWidth: 3,
+        tension: 0.4
+      },
+      {
+        label: 'Q_tan',
+        data: [],
+        borderColor: '#f97316',
+        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+        borderWidth: 3,
+        tension: 0.4
+      }
+    ]
   },
   options: {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      y: { beginAtZero: true },
-      x: { grid: { display: false } }
+      y: { beginAtZero: true, title: { display: true, text: 'Flow (GPM)' } },
+      x: { title: { display: true, text: 'D₂ (mm)' } }
     },
-    plugins: { legend: { display: false } }
+    plugins: {
+      legend: { display: true, position: 'top' }
+    }
   }
 });
 
-// --- Core Physics Calculation ---
+const chartDN = new Chart(ctxDN, {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [
+      {
+        label: 'Q_ax',
+        data: [],
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderWidth: 3,
+        tension: 0.4
+      },
+      {
+        label: 'Q_tan',
+        data: [],
+        borderColor: '#f97316',
+        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+        borderWidth: 3,
+        tension: 0.4
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: { beginAtZero: true, title: { display: true, text: 'Flow (GPM)' } },
+      x: { title: { display: true, text: 'D_N (mm)' } }
+    },
+    plugins: {
+      legend: { display: true, position: 'top' }
+    }
+  }
+});
+
 function computePhysics(qAxGpm, qTanGpm, dN_mm, d1_mm, nInlets, h_mm, b_mm) {
   const qAx = +qAxGpm, qTan = +qTanGpm;
   const qTotGpm = qAx + qTan;
@@ -488,9 +563,7 @@ function computePhysics(qAxGpm, qTanGpm, dN_mm, d1_mm, nInlets, h_mm, b_mm) {
   const vN_ax = A_n > 0 ? Qax_m3s / A_n : 0;
   const v2_theta = A2 > 0 ? Qtan_m3s / A2 : 0;
   
-  // Conservation of Angular Momentum: vN_theta = v2_theta * (D1 / DN)
-  // Variable d1_m here corresponds to D2 in your diagram
-  const vN_theta = dN_m > 0 ? v2_theta * (d1_m / dN_m) : 0;
+  const vN_theta = dN_m > 0 ? (3 * nInlets * d1_m * v2_theta) / (Math.PI * dN_m * dN_m) : 0;
   
   let S;
   if (vN_ax === 0 && vN_theta === 0) S = 0;
@@ -502,8 +575,6 @@ function computePhysics(qAxGpm, qTanGpm, dN_mm, d1_mm, nInlets, h_mm, b_mm) {
   return { qAx, qTan, qTotGpm, vN_ax, v2_theta, vN_theta, S, Re, A_n, A2, dN_m, d1_m };
 }
 
-// --- Inverse Calculations ---
-
 function calcQaxForRe(targetRe, dN_mm, A_n) {
   const dN_m = dN_mm * MM_TO_M;
   if (!A_n || dN_m <= 0) return { error: 'Invalid geometry' };
@@ -512,23 +583,87 @@ function calcQaxForRe(targetRe, dN_mm, A_n) {
   return { Qax_gpm: Qax_m3s / GPM_TO_M3S };
 }
 
-function calcQtanForS(targetS, qAx_gpm, A_n, A2, dN_m, d1_m) {
+function calcQtanForS(targetS, qAx_gpm, A_n, A2, dN_m, d1_m, nInlets) {
   if (!A2 || !A_n || dN_m <= 0) return { error: 'Invalid geometry' };
   const Qax_m3s = qAx_gpm * GPM_TO_M3S;
-  // S = (Qtan * A_N * D1) / (Qax * A2 * DN)  --> Solve for Qtan
-  const Qtan_m3s = (targetS * Qax_m3s * A2 * dN_m) / (A_n * d1_m);
+  const vN_ax = Qax_m3s / A_n;
+  
+  const vN_theta_target = targetS * vN_ax;
+  const v2_theta = (vN_theta_target * Math.PI * dN_m * dN_m) / (3 * nInlets * d1_m);
+  const Qtan_m3s = v2_theta * A2;
+  
   return { Qtan_gpm: Qtan_m3s / GPM_TO_M3S };
 }
 
-function calcQaxForS(targetS, qTan_gpm, A_n, A2, dN_m, d1_m) {
+function calcQaxForS(targetS, qTan_gpm, A_n, A2, dN_m, d1_m, nInlets) {
   if (!A2 || !A_n || dN_m <= 0 || targetS === 0) return { error: 'Invalid input' };
   const Qtan_m3s = qTan_gpm * GPM_TO_M3S;
-  // Solve for Qax
-  const Qax_m3s = (Qtan_m3s * A_n * d1_m) / (targetS * A2 * dN_m);
+  const v2_theta = Qtan_m3s / A2;
+  
+  const vN_theta = (3 * nInlets * d1_m * v2_theta) / (Math.PI * dN_m * dN_m);
+  const vN_ax = vN_theta / targetS;
+  const Qax_m3s = vN_ax * A_n;
+  
   return { Qax_gpm: Qax_m3s / GPM_TO_M3S };
 }
 
-// --- UI Logic ---
+function updateCharts() {
+  const qAx = parseFloat(axial.value);
+  const qTan = parseFloat(tang.value);
+  const dN = parseFloat(dnEl.value) || 26;
+  const d1 = parseFloat(d1El.value) || 65;
+  const n = parseFloat(nInletsEl.value) || 4;
+  const h = parseFloat(hEl.value) || 10;
+  const b = parseFloat(bEl.value) || 5.276;
+
+  const qaxRange = [];
+  const sVsQax = [];
+  const reVsQax = [];
+  
+  for (let q = 0; q <= 100; q += 2) {
+    qaxRange.push(q.toFixed(0));
+    const res = computePhysics(q, qTan, dN, d1, n, h, b);
+    sVsQax.push(isFinite(res.S) ? res.S : null);
+    reVsQax.push(res.Re / 1000);
+  }
+
+  chartD2.data.labels = qaxRange;
+  chartD2.data.datasets[0].data = sVsQax;
+  chartD2.data.datasets[0].label = 'Swirl Number (S)';
+  chartD2.data.datasets[0].borderColor = '#f97316';
+  chartD2.data.datasets[0].backgroundColor = 'rgba(249, 115, 22, 0.1)';
+  chartD2.data.datasets[1].data = reVsQax;
+  chartD2.data.datasets[1].label = 'Re (×1000)';
+  chartD2.data.datasets[1].borderColor = '#3b82f6';
+  chartD2.data.datasets[1].backgroundColor = 'rgba(59, 130, 246, 0.1)';
+  chartD2.options.scales.y.title.text = 'S / Re(×1000)';
+  chartD2.options.scales.x.title.text = 'Q_ax (GPM)';
+  chartD2.update();
+
+  const qtanRange = [];
+  const sVsQtan = [];
+  const reVsQtan = [];
+  
+  for (let q = 0; q <= 100; q += 2) {
+    qtanRange.push(q.toFixed(0));
+    const res = computePhysics(qAx, q, dN, d1, n, h, b);
+    sVsQtan.push(isFinite(res.S) ? res.S : null);
+    reVsQtan.push(res.Re / 1000);
+  }
+
+  chartDN.data.labels = qtanRange;
+  chartDN.data.datasets[0].data = sVsQtan;
+  chartDN.data.datasets[0].label = 'Swirl Number (S)';
+  chartDN.data.datasets[0].borderColor = '#f97316';
+  chartDN.data.datasets[0].backgroundColor = 'rgba(249, 115, 22, 0.1)';
+  chartDN.data.datasets[1].data = reVsQtan;
+  chartDN.data.datasets[1].label = 'Re (×1000)';
+  chartDN.data.datasets[1].borderColor = '#3b82f6';
+  chartDN.data.datasets[1].backgroundColor = 'rgba(59, 130, 246, 0.1)';
+  chartDN.options.scales.y.title.text = 'S / Re(×1000)';
+  chartDN.options.scales.x.title.text = 'Q_tan (GPM)';
+  chartDN.update();
+}
 
 function checkSliderRange(slider, val) {
   if (val > parseFloat(slider.max)) {
@@ -537,21 +672,17 @@ function checkSliderRange(slider, val) {
 }
 
 function updateCalculatorUI() {
-  // 1. Read geometry
   const dN = parseFloat(dnEl.value) || 26;
-  const d1 = parseFloat(d1El.value) || 65; // User sees D2
+  const d1 = parseFloat(d1El.value) || 65;
   const n = parseFloat(nInletsEl.value) || 4;
   const h = parseFloat(hEl.value) || 10;
   const b = parseFloat(bEl.value) || 5.276;
 
-  // 2. Read Flows (from sliders)
   let qA = parseFloat(axial.value);
   let qT = parseFloat(tang.value);
 
-  // 3. Compute Physics
   const res = computePhysics(qA, qT, dN, d1, n, h, b);
 
-  // 4. Update Outputs
   axialVal.textContent = res.qAx.toFixed(2);
   tanVal.textContent = res.qTan.toFixed(2);
   
@@ -562,23 +693,11 @@ function updateCalculatorUI() {
   QtotDisp.textContent = res.qTotGpm.toFixed(2) + ' GPM';
   Redisp.textContent = Math.round(res.Re).toLocaleString();
 
-  // 5. Update Chart
-  barChart.data.datasets[0].data = [res.qAx, res.qTan];
-  barChart.update();
+  document.getElementById('qaxLabel').textContent = res.qAx.toFixed(1);
+  document.getElementById('qtanLabel').textContent = res.qTan.toFixed(1);
 
-  // 6. Update Share Link
-  const url = new URL(window.location.href.split('#')[0]);
-  url.searchParams.set('qax', res.qAx);
-  url.searchParams.set('qtan', res.qTan);
-  url.searchParams.set('dn', dN);
-  url.searchParams.set('d1', d1);
-  url.searchParams.set('n', n);
-  url.searchParams.set('h', h);
-  url.searchParams.set('b', b);
-  shareLink.href = url.toString();
+  updateCharts();
 }
-
-// --- Event Listeners ---
 
 axial.addEventListener('input', updateCalculatorUI);
 tang.addEventListener('input', updateCalculatorUI);
@@ -609,8 +728,6 @@ document.getElementById('compute').addEventListener('click', () => {
   tang.value = qT;
   updateCalculatorUI();
 });
-
-// --- Target Handlers ---
 
 applyReBtn.addEventListener('click', () => {
   const target = parseFloat(targetReEl.value);
@@ -644,7 +761,7 @@ applySBtn.addEventListener('click', () => {
 
   if (mode === 'qtan') {
     const currentQax = parseFloat(axial.value);
-    const res = calcQtanForS(targetS, currentQax, A_n, A2, dN_m, d1_m);
+    const res = calcQtanForS(targetS, currentQax, A_n, A2, dN_m, d1_m, n);
     if (res.error) { sResult.textContent = res.error; return; }
     newQ = res.Qtan_gpm;
     checkSliderRange(tang, newQ);
@@ -652,7 +769,7 @@ applySBtn.addEventListener('click', () => {
     sResult.textContent = `Set Q_tan to ${newQ.toFixed(2)} GPM.`;
   } else {
     const currentQtan = parseFloat(tang.value);
-    const res = calcQaxForS(targetS, currentQtan, A_n, A2, dN_m, d1_m);
+    const res = calcQaxForS(targetS, currentQtan, A_n, A2, dN_m, d1_m, n);
     if (res.error) { sResult.textContent = res.error; return; }
     newQ = res.Qax_gpm;
     checkSliderRange(axial, newQ);
@@ -673,35 +790,15 @@ previewSBtn.addEventListener('click', () => {
   
   const mode = solveForS.value;
   if (mode === 'qtan') {
-    const res = calcQtanForS(targetS, parseFloat(axial.value), A_n, A2, dN_m, d1_m);
+    const res = calcQtanForS(targetS, parseFloat(axial.value), A_n, A2, dN_m, d1_m, n);
     if (!res.error) sResult.textContent = `Required Q_tan: ${res.Qtan_gpm.toFixed(3)} GPM`;
   } else {
-    const res = calcQaxForS(targetS, parseFloat(tang.value), A_n, A2, dN_m, d1_m);
+    const res = calcQaxForS(targetS, parseFloat(tang.value), A_n, A2, dN_m, d1_m, n);
     if (!res.error) sResult.textContent = `Required Q_ax: ${res.Qax_gpm.toFixed(3)} GPM`;
   }
 });
 
-(function init() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.has('qax')) {
-    const qA = parseFloat(params.get('qax'));
-    checkSliderRange(axial, qA);
-    axial.value = qA;
-    qaxEl.value = qA;
-  }
-  if (params.has('qtan')) {
-    const qT = parseFloat(params.get('qtan'));
-    checkSliderRange(tang, qT);
-    tang.value = qT;
-    qtanEl.value = qT;
-  }
-  if (params.has('dn')) dnEl.value = params.get('dn');
-  if (params.has('d1')) d1El.value = params.get('d1');
-  if (params.has('n')) nInletsEl.value = params.get('n');
-  if (params.has('h')) hEl.value = params.get('h');
-  if (params.has('b')) bEl.value = params.get('b');
-  updateCalculatorUI();
-})();
+updateCalculatorUI();
 </script>
 </body>
 </html>
