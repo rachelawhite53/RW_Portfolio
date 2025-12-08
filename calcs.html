@@ -396,37 +396,64 @@
         <div class="analysis-grid">
           <div class="analysis-section">
             <div class="section-header">
-              <span class="section-number">A</span>
-              <h4>Target Reynolds → Compute $Q_{ax}$</h4>
+              <span class="section-number">1</span>
+              <h4>Target Reynolds Number</h4>
             </div>
-            <p>Enter a target Reynolds number based on nozzle diameter. The calculator will determine the required axial flow rate (GPM).</p>
-            <div style="display:grid; gap:8px; margin-top:8px;">
-              <input id="targetRe" type="number" placeholder="e.g. 20000" step="1" />
-              <div style="display:flex; gap:8px;">
-                <button id="applyRe" class="btn">Set Q<sub>ax</sub> for target Re</button>
+            <p>Enter target Re to solve for the required axial flow rate.</p>
+            <div style="display:grid; gap:12px; margin-top:12px;">
+              <div>
+                <label style="font-size:13px; font-weight:600;">Target Re</label>
+                <input id="targetRe" type="number" placeholder="e.g. 20000" step="1" style="margin-top:4px;" />
               </div>
-              <div id="reResult" class="small" style="color:var(--text-secondary)"></div>
+              <button id="applyRe" class="btn">Compute Q<sub>ax</sub></button>
+              <div id="reResult" class="small" style="color:var(--text-secondary); min-height:20px;"></div>
             </div>
           </div>
 
           <div class="analysis-section highlight">
             <div class="section-header">
-              <span class="section-number">B</span>
-              <h4>Target Swirl Number (S)</h4>
+              <span class="section-number">2</span>
+              <h4>Target Swirl Number</h4>
             </div>
-            <p>Enter a target swirl number and select whether to solve for Q<sub>tan</sub> (given Q<sub>ax</sub>) or Q<sub>ax</sub> (given Q<sub>tan</sub>). The calculator will determine the required flow rate.</p>
-            <div style="display:grid; gap:8px; margin-top:8px;">
-              <input id="targetS" type="number" placeholder="e.g. 0.8" step="0.001" />
-              <label style="font-size:13px; font-weight:600; margin-top:6px;">Solve for</label>
-              <select id="solveForS" style="padding:10px; border-radius:8px; border:2px solid var(--border);">
-                <option value="qtan">Q<sub>tan</sub> (given Q<sub>ax</sub>)</option>
-                <option value="qax">Q<sub>ax</sub> (given Q<sub>tan</sub>)</option>
-              </select>
-              <div style="display:flex; gap:8px;">
-                <button id="applyS" class="btn">Compute & Set</button>
-                <button id="previewS" class="btn green">Preview Only</button>
+            <p>Enter target S and one flow rate to solve for the other.</p>
+            <div style="display:grid; gap:12px; margin-top:12px;">
+              <div>
+                <label style="font-size:13px; font-weight:600;">Target S</label>
+                <input id="targetS" type="number" placeholder="e.g. 0.8" step="0.01" style="margin-top:4px;" />
               </div>
-              <div id="sResult" class="small" style="color:var(--text-secondary)"></div>
+              <div>
+                <label style="font-size:13px; font-weight:600;">Known Flow</label>
+                <select id="knownFlow" style="padding:10px; border-radius:8px; border:2px solid var(--border); margin-top:4px;">
+                  <option value="qax">Q<sub>ax</sub> is known (solve for Q<sub>tan</sub>)</option>
+                  <option value="qtan">Q<sub>tan</sub> is known (solve for Q<sub>ax</sub>)</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:13px; font-weight:600;">Known Flow Value (GPM)</label>
+                <input id="knownFlowValue" type="number" placeholder="e.g. 15" step="0.1" style="margin-top:4px;" />
+              </div>
+              <button id="applyS" class="btn">Compute Unknown Flow</button>
+              <div id="sResult" class="small" style="color:var(--text-secondary); min-height:20px;"></div>
+            </div>
+          </div>
+
+          <div class="analysis-section">
+            <div class="section-header">
+              <span class="section-number">3</span>
+              <h4>Target Total Flow</h4>
+            </div>
+            <p>Enter target Q<sub>total</sub> and target S to solve for Q<sub>ax</sub> and Q<sub>tan</sub>.</p>
+            <div style="display:grid; gap:12px; margin-top:12px;">
+              <div>
+                <label style="font-size:13px; font-weight:600;">Target Q<sub>total</sub> (GPM)</label>
+                <input id="targetQtotal" type="number" placeholder="e.g. 25" step="0.1" style="margin-top:4px;" />
+              </div>
+              <div>
+                <label style="font-size:13px; font-weight:600;">Target S</label>
+                <input id="targetSforQtotal" type="number" placeholder="e.g. 0.8" step="0.01" style="margin-top:4px;" />
+              </div>
+              <button id="applyQtotal" class="btn">Compute Q<sub>ax</sub> & Q<sub>tan</sub></button>
+              <div id="qtotalResult" class="small" style="color:var(--text-secondary); min-height:20px;"></div>
             </div>
           </div>
         </div>
@@ -510,10 +537,15 @@ const applyReBtn = document.getElementById('applyRe');
 const reResult = document.getElementById('reResult');
 
 const targetSEl = document.getElementById('targetS');
-const solveForS = document.getElementById('solveForS');
+const knownFlowEl = document.getElementById('knownFlow');
+const knownFlowValueEl = document.getElementById('knownFlowValue');
 const applySBtn = document.getElementById('applyS');
-const previewSBtn = document.getElementById('previewS');
 const sResult = document.getElementById('sResult');
+
+const targetQtotalEl = document.getElementById('targetQtotal');
+const targetSforQtotalEl = document.getElementById('targetSforQtotal');
+const applyQtotalBtn = document.getElementById('applyQtotal');
+const qtotalResult = document.getElementById('qtotalResult');
 
 const ctxD2 = document.getElementById('chartD2').getContext('2d');
 const ctxDN = document.getElementById('chartDN').getContext('2d');
@@ -792,13 +824,23 @@ applyReBtn.addEventListener('click', () => {
 
   checkSliderRange(axial, res.Qax_gpm);
   axial.value = res.Qax_gpm;
+  qaxEl.value = res.Qax_gpm.toFixed(3);
   updateCalculatorUI();
-  reResult.textContent = `Set Q_ax to ${res.Qax_gpm.toFixed(2)} GPM.`;
+  reResult.textContent = `✓ Set Q_ax to ${res.Qax_gpm.toFixed(2)} GPM`;
 });
 
 applySBtn.addEventListener('click', () => {
   const targetS = parseFloat(targetSEl.value);
-  if (isNaN(targetS) || targetS < 0) { sResult.textContent = "Invalid S"; return; }
+  const knownValue = parseFloat(knownFlowValueEl.value);
+  
+  if (isNaN(targetS) || targetS < 0) { 
+    sResult.textContent = "Invalid S value"; 
+    return; 
+  }
+  if (isNaN(knownValue) || knownValue < 0) { 
+    sResult.textContent = "Invalid flow value"; 
+    return; 
+  }
   
   const dN = parseFloat(dnEl.value)||10, d1 = parseFloat(d1El.value)||70;
   const n = parseFloat(nInletsEl.value)||4, h = parseFloat(hEl.value)||7.5, b = parseFloat(bEl.value)||8.061;
@@ -806,46 +848,67 @@ applySBtn.addEventListener('click', () => {
   const A_n = Math.PI * Math.pow(dN_m/2, 2);
   const A2 = n * (h * MM_TO_M) * (b * MM_TO_M);
 
-  const mode = solveForS.value;
+  const mode = knownFlowEl.value;
   let newQ;
 
-  if (mode === 'qtan') {
-    const currentQax = parseFloat(axial.value);
-    const res = calcQtanForS(targetS, currentQax, A_n, A2, dN_m, d1_m, n);
+  if (mode === 'qax') {
+    const res = calcQtanForS(targetS, knownValue, A_n, A2, dN_m, d1_m, n);
     if (res.error) { sResult.textContent = res.error; return; }
     newQ = res.Qtan_gpm;
     checkSliderRange(tang, newQ);
     tang.value = newQ;
-    sResult.textContent = `Set Q_tan to ${newQ.toFixed(2)} GPM.`;
+    qtanEl.value = newQ.toFixed(3);
+    sResult.textContent = `✓ Set Q_tan to ${newQ.toFixed(2)} GPM (Q_ax = ${knownValue.toFixed(2)} GPM)`;
   } else {
-    const currentQtan = parseFloat(tang.value);
-    const res = calcQaxForS(targetS, currentQtan, A_n, A2, dN_m, d1_m, n);
+    const res = calcQaxForS(targetS, knownValue, A_n, A2, dN_m, d1_m, n);
     if (res.error) { sResult.textContent = res.error; return; }
     newQ = res.Qax_gpm;
     checkSliderRange(axial, newQ);
     axial.value = newQ;
-    sResult.textContent = `Set Q_ax to ${newQ.toFixed(2)} GPM.`;
+    qaxEl.value = newQ.toFixed(3);
+    sResult.textContent = `✓ Set Q_ax to ${newQ.toFixed(2)} GPM (Q_tan = ${knownValue.toFixed(2)} GPM)`;
   }
   updateCalculatorUI();
 });
 
-previewSBtn.addEventListener('click', () => {
-  const targetS = parseFloat(targetSEl.value);
-  if (isNaN(targetS) || targetS < 0) return;
+applyQtotalBtn.addEventListener('click', () => {
+  const targetQtot = parseFloat(targetQtotalEl.value);
+  const targetS = parseFloat(targetSforQtotalEl.value);
+  
+  if (isNaN(targetQtot) || targetQtot <= 0) { 
+    qtotalResult.textContent = "Invalid Q_total value"; 
+    return; 
+  }
+  if (isNaN(targetS) || targetS < 0) { 
+    qtotalResult.textContent = "Invalid S value"; 
+    return; 
+  }
+  
   const dN = parseFloat(dnEl.value)||10, d1 = parseFloat(d1El.value)||70;
   const n = parseFloat(nInletsEl.value)||4, h = parseFloat(hEl.value)||7.5, b = parseFloat(bEl.value)||8.061;
   const dN_m = dN * MM_TO_M, d1_m = d1 * MM_TO_M;
   const A_n = Math.PI * Math.pow(dN_m/2, 2);
   const A2 = n * (h * MM_TO_M) * (b * MM_TO_M);
   
-  const mode = solveForS.value;
-  if (mode === 'qtan') {
-    const res = calcQtanForS(targetS, parseFloat(axial.value), A_n, A2, dN_m, d1_m, n);
-    if (!res.error) sResult.textContent = `Required Q_tan: ${res.Qtan_gpm.toFixed(3)} GPM`;
-  } else {
-    const res = calcQaxForS(targetS, parseFloat(tang.value), A_n, A2, dN_m, d1_m, n);
-    if (!res.error) sResult.textContent = `Required Q_ax: ${res.Qax_gpm.toFixed(3)} GPM`;
+  const Qax_m3s = targetQtot * GPM_TO_M3S / (1 + targetS * A2 * dN_m / (3 * n * d1_m * A_n));
+  const Qtan_m3s = targetQtot * GPM_TO_M3S - Qax_m3s;
+  
+  const Qax_gpm = Qax_m3s / GPM_TO_M3S;
+  const Qtan_gpm = Qtan_m3s / GPM_TO_M3S;
+  
+  if (Qax_gpm < 0 || Qtan_gpm < 0) {
+    qtotalResult.textContent = "Solution resulted in negative flow - check inputs";
+    return;
   }
+  
+  checkSliderRange(axial, Qax_gpm);
+  checkSliderRange(tang, Qtan_gpm);
+  axial.value = Qax_gpm;
+  tang.value = Qtan_gpm;
+  qaxEl.value = Qax_gpm.toFixed(3);
+  qtanEl.value = Qtan_gpm.toFixed(3);
+  updateCalculatorUI();
+  qtotalResult.textContent = `✓ Q_ax = ${Qax_gpm.toFixed(2)} GPM, Q_tan = ${Qtan_gpm.toFixed(2)} GPM`;
 });
 
 updateCalculatorUI();
