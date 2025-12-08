@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Swirling Jet Calculator: Flow Analysis </title>
+<title>Swirling Jet Calculator — Flow Analysis Tool</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -282,8 +282,12 @@
 
     <div class="card" id="calculatorCard">
       <div>
-        <h1>Swirling Jet: Parameter Calculator</h1>
+        <h1>Swirling Jet — Parameter Calculator</h1>
         <div class="small">Adjust axial and tangential flow rates to see $S$ (Swirl Number) and $Re$ (Reynolds Number). Units: GPM (flows) — geometry inputs in <strong>mm</strong>.</div>
+        <div class="correction-note">
+          <strong>✓ Physics Implementation</strong>
+          Using conservation of angular momentum: $\overline{V}_{\theta,N} = \frac{3n D_2 \overline{V}_{\theta,2}}{\pi D_N^2}$
+        </div>
       </div>
 
       <div class="row">
