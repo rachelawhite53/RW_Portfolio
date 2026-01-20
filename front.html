@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,19 +14,23 @@
       color: #1e293b;
       min-height: 100vh;
     }
+
     header {
       text-align: center;
       padding: 40px 10px 20px;
       color: white;
     }
+
     header h1 {
       margin: 0;
       font-size: 2.5rem;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
+
     header p {
-      color: rgba(255,255,255,0.8);
+      color: rgba(255, 255, 255, 0.8);
     }
+
     nav {
       display: flex;
       justify-content: center;
@@ -33,6 +38,7 @@
       gap: 12px;
       margin: 20px auto 40px;
     }
+
     nav a {
       background: white;
       color: #1e293b;
@@ -40,43 +46,51 @@
       padding: 12px 20px;
       border-radius: 10px;
       font-weight: 600;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       transition: all 0.2s;
     }
+
     nav a:hover {
       background: #eff6ff;
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(59,130,246,0.25);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.25);
     }
+
     .content {
       max-width: 1200px;
       margin: 0 auto;
       background: white;
       border-radius: 16px;
       padding: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
+
     .content h2 {
       color: #667eea;
       margin-top: 0;
     }
+
     .content h3 {
       color: #764ba2;
       margin-top: 30px;
       margin-bottom: 12px;
     }
+
     .content ul {
       line-height: 1.8;
     }
+
     .content a {
       color: #667eea;
       text-decoration: none;
       transition: color 0.2s;
     }
+
     .content a:hover {
       color: #764ba2;
       text-decoration: underline;
     }
+
     .presentation-link {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
@@ -86,25 +100,31 @@
       margin: 20px 0;
       font-weight: 600;
       text-decoration: none;
-      box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
       transition: all 0.2s;
     }
+
     .presentation-link:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(102,126,234,0.4);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
       text-decoration: none;
     }
+
     footer {
       text-align: center;
       margin: 40px 0 10px;
-      color: rgba(255,255,255,0.8);
+      color: rgba(255, 255, 255, 0.8);
       font-size: 13px;
     }
+
     @media (max-width: 768px) {
-      nav a { font-size: 14px; }
+      nav a {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Jet Flow Experiment</h1>
@@ -114,14 +134,15 @@
     <a href="loop.html">Flow Loop Explorer</a>
     <a href="calcs.html">Swirl Calculator</a>
     <a href="swirler.html">3D Model</a>
-    <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project" target="_blank">Project Timeline</a>
+    <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project"
+      target="_blank">Project Timeline</a>
   </nav>
 
   <div class="content">
     <h2>Project Resources</h2>
-    
-    <!-- Add your PDF link here -->
-    <a href="YOUR_PDF_LINK_HERE.pdf" class="presentation-link" target="_blank">📄 View Project Presentation (PDF)</a>
+
+    <a href="Final Presentation.pdf" class="presentation-link" target="_blank">📄 View Sem. 1 Project Presentation
+      (PDF)</a>
 
     <h3>Key Research</h3>
     <ul>
@@ -135,7 +156,8 @@
     <ul>
       <li><a href="https://modelviewer.dev/" target="_blank">Model Viewer</a>: Interactive 3D CAD rendering</li>
       <li><a href="https://www.mathjax.org/" target="_blank">MathJax</a>: LaTeX equation rendering</li>
-      <li><a href="https://developer.atlassian.com/cloud/trello/" target="_blank">Trello</a>: Project board embedding</li>
+      <li><a href="https://developer.atlassian.com/cloud/trello/" target="_blank">Trello</a>: Project board embedding
+      </li>
     </ul>
   </div>
 
@@ -143,4 +165,5 @@
     © Rachel White, Duke University Pratt School of Engineering, 2025.
   </footer>
 </body>
+
 </html>
