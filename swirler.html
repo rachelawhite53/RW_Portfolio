@@ -1,381 +1,415 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Swirler & Assembly Viewer</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg-dark: #2b2b2b;
-    --panel-bg: #333;
-    --text-main: #eee;
-    --text-muted: #a8c1dd;
-    --accent: #0ea5e9;
-    --accent-hover: #0284c7;
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Swirler & Assembly Viewer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #2b2b2b;
+      --panel-bg: #333;
+      --text-main: #eee;
+      --text-muted: #a8c1dd;
+      --accent: #0ea5e9;
+      --accent-hover: #0284c7;
+    }
 
-  body{
-    font-family: 'Inter', system-ui, sans-serif;
-    margin:0;
-    background: var(--bg-dark);
-    color: var(--text-main);
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    min-height: 100vh;
-  }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
 
-  /* --- Navigation Bar (Dark Mode) --- */
-  .nav-bar {
-    background: rgba(51, 51, 51, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 12px 24px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    margin-bottom: 24px;
-    border: 1px solid #444;
-  }
+    /* --- Navigation Bar (Dark Mode) --- */
+    .nav-bar {
+      background: rgba(51, 51, 51, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 12px 24px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      margin-bottom: 24px;
+      border: 1px solid #444;
+    }
 
-  .nav-bar a {
-    text-decoration: none;
-    color: var(--text-muted);
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.2s;
-  }
+    .nav-bar a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
 
-  .nav-bar a:hover { color: #fff; }
-  .nav-bar a.active { color: var(--accent); font-weight: 700; }
+    .nav-bar a:hover {
+      color: #fff;
+    }
 
-  /* --- Main Layout --- */
-  .wrap{
-    width:100%;
-    max-width:1400px;
-    display:flex;
-    gap:20px;
-    align-items: flex-start;
-    height: 80vh;
-  }
-  
-  /* Viewer Container */
-  .viewerBox{
-    flex:1;
-    position:relative;
-    border-radius:16px;
-    overflow:hidden;
-    background:#444;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    height: 100%;
-  }
-  
-  model-viewer{
-    width:100%;
-    height:100%;
-    display:block;
-    background:#444;
-    /* Fixes blurry textures on some high-DPI screens */
-    --poster-color: transparent;
-  }
-  
-  /* Sidebar Controls */
-  .controls{
-    width:300px;
-    background: var(--panel-bg);
-    border-radius:16px;
-    padding:20px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.4);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    overflow-y: auto;
-    max-height: 100%;
-  }
-  
-  .controls h3{ margin:0; color:#fff; font-size: 18px; }
-  
-  .control-group {
-    border-bottom: 1px solid #444;
-    padding-bottom: 16px;
-  }
-  .control-group:last-child { border-bottom: none; }
-  
-  label{ display:block; font-size:12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-  
-  select, input[type=color], button {
-    width:100%;
-    padding:10px 12px;
-    border-radius:8px;
-    border:1px solid #555;
-    background:#222;
-    color:#fff;
-    font-family: inherit;
-    font-size: 13px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+    .nav-bar a.active {
+      color: var(--accent);
+      font-weight: 700;
+    }
 
-  select:hover, button:hover { border-color: var(--accent); }
-  
-  /* Model Selection Buttons */
-  .model-btn {
-    text-align: left;
-    background: #2a2a2a;
-    border: 1px solid #444;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .model-btn.active-model {
-    border-color: var(--accent);
-    background: rgba(14, 165, 233, 0.1);
-    color: var(--accent);
-  }
+    /* --- Main Layout --- */
+    .wrap {
+      width: 100%;
+      max-width: 1400px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      height: 80vh;
+    }
 
-  /* Primary Button Style */
-  button.primary {
-    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-    border: none;
-    font-weight: 600;
-  }
-  
-  /* Profile Box (Dimensions) */
-  .profileBox{
-    background:#242424;
-    border-radius:8px;
-    border:1px solid #3a3a3a;
-    padding: 12px;
-  }
-  
-  .dim-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    margin-top: 6px;
-    font-family: monospace;
-    color: #cbdff5;
-  }
-  
-  .status{
-    font-size:12px;
-    color: var(--accent);
-    text-align: center;
-    margin-top: 4px;
-    min-height: 18px;
-  }
-  
-  /* Responsive */
-  @media (max-width: 800px) {
-    .wrap { flex-direction: column; height: auto; }
-    .viewerBox { height: 50vh; }
-    .controls { width: 100%; max-height: none; }
-    .nav-bar { flex-wrap: wrap; }
-  }
-</style>
+    /* Viewer Container */
+    .viewerBox {
+      flex: 1;
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #444;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      height: 100%;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #444;
+      /* Fixes blurry textures on some high-DPI screens */
+      --poster-color: transparent;
+    }
+
+    /* Sidebar Controls */
+    .controls {
+      width: 300px;
+      background: var(--panel-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      max-height: 100%;
+    }
+
+    .controls h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .control-group {
+      border-bottom: 1px solid #444;
+      padding-bottom: 16px;
+    }
+
+    .control-group:last-child {
+      border-bottom: none;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    select,
+    input[type=color],
+    button {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background: #222;
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    select:hover,
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    /* Model Selection Buttons */
+    .model-btn {
+      text-align: left;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .model-btn.active-model {
+      border-color: var(--accent);
+      background: rgba(14, 165, 233, 0.1);
+      color: var(--accent);
+    }
+
+    /* Primary Button Style */
+    button.primary {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      border: none;
+      font-weight: 600;
+    }
+
+    /* Profile Box (Dimensions) */
+    .profileBox {
+      background: #242424;
+      border-radius: 8px;
+      border: 1px solid #3a3a3a;
+      padding: 12px;
+    }
+
+    .dim-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-top: 6px;
+      font-family: monospace;
+      color: #cbdff5;
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--accent);
+      text-align: center;
+      margin-top: 4px;
+      min-height: 18px;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      .wrap {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .viewerBox {
+        height: 50vh;
+      }
+
+      .controls {
+        width: 100%;
+        max-height: none;
+      }
+
+      .nav-bar {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="nav-bar">
-  <a href="loop.html">Flow Loop Explorer</a>
-  <a href="calcs.html">Swirl Calculator</a>
-  <a href="swirler.html" class="active">3D Model</a>
-  <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project" target="_blank">Project Timeline</a>
-</div>
-
-<div class="wrap">
-  <div class="viewerBox" id="viewerBox">
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    
-    <model-viewer 
-      id="mv" 
-      src="./swirler.gltf" 
-      alt="3D Model" 
-      camera-controls 
-      auto-rotate 
-      rotation-per-second="30deg" 
-      shadow-intensity="1.5" 
-      shadow-softness="0.1"
-      exposure="1.3"
-      camera-orbit="45deg 55deg 105%"
-    ></model-viewer>
+  <div class="nav-bar">
+    <a href="loop.html">Flow Loop Explorer</a>
+    <a href="calcs.html">Swirl Calculator</a>
+    <a href="swirler.html" class="active">3D Model</a>
+    <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project"
+      target="_blank">Project Timeline</a>
   </div>
 
-  <div class="controls">
-    
-    <div class="control-group">
-      <h3>Model Viewer</h3>
-      <div class="status" id="status">Swirler Loaded</div>
+  <div class="wrap">
+    <div class="viewerBox" id="viewerBox">
+      <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+      <model-viewer id="mv" src="./assets/swirler.gltf" alt="3D Model" camera-controls auto-rotate
+        rotation-per-second="30deg" shadow-intensity="1.5" shadow-softness="0.1" exposure="1.3"
+        camera-orbit="45deg 55deg 105%"></model-viewer>
     </div>
 
-    <div class="control-group">
-      <label>Select Component</label>
-      <button class="model-btn active-model" onclick="loadModel(this, './swirler.gltf')">
-        Swirler Only <span>●</span>
-      </button>
-      <button class="model-btn" onclick="loadModel(this, './assembly1.gltf')">
-        Assembly Config 1 <span>○</span>
-      </button>
-      <button class="model-btn" onclick="loadModel(this, './assembly2.gltf')">
-        Assembly Config 2 <span>○</span>
-      </button>
-      <button class="model-btn" onclick="loadModel(this, './assembly3.gltf')">
-        Assembly Config 3 <span>○</span>
-      </button>
-      
-      <button id="resetBtn" style="margin-top:12px">Reset Camera View</button>
-    </div>
+    <div class="controls">
 
-    <div class="control-group">
-      <label>Appearance</label>
-      <select id="envSel">
-        <option value="dark">Dark Studio</option>
-        <option value="light">Light Lab</option>
-      </select>
-
-      <label style="margin-top:12px;">Color Tint</label>
-      <div style="display:flex; gap:8px;">
-        <input id="colorPicker" type="color" value="#ff8833" style="height:40px; width:50px; padding:0;" />
-        <button id="applyColor" class="primary">Apply Color</button>
+      <div class="control-group">
+        <h3>Model Viewer</h3>
+        <div class="status" id="status">Swirler Loaded</div>
       </div>
-    </div>
 
-    <div class="control-group">
-      <label>Analysis</label>
-      <button id="autoRotateBtn">Auto Rotate: ON</button>
-      
-      <div class="profileBox">
-        <label style="margin:0 0 8px 0;">Bounding Box (Meters)</label>
-        <div class="dim-row"><span>Width (X)</span> <span id="dimX">—</span></div>
-        <div class="dim-row"><span>Height (Y)</span> <span id="dimY">—</span></div>
-        <div class="dim-row"><span>Depth (Z)</span> <span id="dimZ">—</span></div>
+      <div class="control-group">
+        <label>Select Component</label>
+        <button class="model-btn active-model" onclick="loadModel(this, './assets/swirler.gltf')">
+          Swirler Only <span>●</span>
+        </button>
+        <button class="model-btn" onclick="loadModel(this, './assets/assembly1.gltf')">
+          Assembly Config 1 <span>○</span>
+        </button>
+        <button class="model-btn" onclick="loadModel(this, './assets/assembly2.gltf')">
+          Assembly Config 2 <span>○</span>
+        </button>
+        <button class="model-btn" onclick="loadModel(this, './assets/assembly3.gltf')">
+          Assembly Config 3 <span>○</span>
+        </button>
+
+        <button id="resetBtn" style="margin-top:12px">Reset Camera View</button>
       </div>
-    </div>
 
+      <div class="control-group">
+        <label>Appearance</label>
+        <select id="envSel">
+          <option value="dark">Dark Studio</option>
+          <option value="light">Light Lab</option>
+        </select>
+
+        <label style="margin-top:12px;">Color Tint</label>
+        <div style="display:flex; gap:8px;">
+          <input id="colorPicker" type="color" value="#ff8833" style="height:40px; width:50px; padding:0;" />
+          <button id="applyColor" class="primary">Apply Color</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Analysis</label>
+        <button id="autoRotateBtn">Auto Rotate: ON</button>
+
+        <div class="profileBox">
+          <label style="margin:0 0 8px 0;">Bounding Box (Meters)</label>
+          <div class="dim-row"><span>Width (X)</span> <span id="dimX">—</span></div>
+          <div class="dim-row"><span>Height (Y)</span> <span id="dimY">—</span></div>
+          <div class="dim-row"><span>Depth (Z)</span> <span id="dimZ">—</span></div>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
 
-<script>
-const mv = document.getElementById('mv');
-const resetBtn = document.getElementById('resetBtn');
-const envSel = document.getElementById('envSel');
-const colorPicker = document.getElementById('colorPicker');
-const applyColor = document.getElementById('applyColor');
-const autoRotateBtn = document.getElementById('autoRotateBtn');
-const dimX = document.getElementById('dimX');
-const dimY = document.getElementById('dimY');
-const dimZ = document.getElementById('dimZ');
-const status = document.getElementById('status');
-const viewerBox = document.getElementById('viewerBox');
+  <script>
+    const mv = document.getElementById('mv');
+    const resetBtn = document.getElementById('resetBtn');
+    const envSel = document.getElementById('envSel');
+    const colorPicker = document.getElementById('colorPicker');
+    const applyColor = document.getElementById('applyColor');
+    const autoRotateBtn = document.getElementById('autoRotateBtn');
+    const dimX = document.getElementById('dimX');
+    const dimY = document.getElementById('dimY');
+    const dimZ = document.getElementById('dimZ');
+    const status = document.getElementById('status');
+    const viewerBox = document.getElementById('viewerBox');
 
-let materialsReady = false;
-let currentMaterials = [];
+    let materialsReady = false;
+    let currentMaterials = [];
 
-// 1. Function to Load Models via Buttons
-window.loadModel = function(btn, file) {
-  // Update UI classes
-  document.querySelectorAll('.model-btn').forEach(b => {
-    b.classList.remove('active-model');
-    b.querySelector('span').textContent = '○';
-  });
-  btn.classList.add('active-model');
-  btn.querySelector('span').textContent = '●';
+    // 1. Function to Load Models via Buttons
+    window.loadModel = function (btn, file) {
+      // Update UI classes
+      document.querySelectorAll('.model-btn').forEach(b => {
+        b.classList.remove('active-model');
+        b.querySelector('span').textContent = '○';
+      });
+      btn.classList.add('active-model');
+      btn.querySelector('span').textContent = '●';
 
-  // Load Model
-  status.textContent = 'Loading...';
-  dimX.textContent = '...';
-  dimY.textContent = '...';
-  dimZ.textContent = '...';
-  mv.src = file;
-};
+      // Load Model
+      status.textContent = 'Loading...';
+      dimX.textContent = '...';
+      dimY.textContent = '...';
+      dimZ.textContent = '...';
+      mv.src = file;
+    };
 
-// 2. Handle Model Loaded Event (Dimensions & Materials)
-mv.addEventListener('load', () => {
-  status.textContent = 'Model Ready';
-  
-  // -- Material Setup --
-  try {
-    const model = mv.model;
-    if(model && model.materials){
-      currentMaterials = model.materials;
-      materialsReady = true;
-    } else {
-      materialsReady = false;
-    }
-  } catch(e) { materialsReady = false; }
+    // 2. Handle Model Loaded Event (Dimensions & Materials)
+    mv.addEventListener('load', () => {
+      status.textContent = 'Model Ready';
 
-  // -- Dimension Calculation --
-  try {
-    const dim = mv.getDimensions(); // returns object {x, y, z} in meters
-    dimX.textContent = dim.x.toFixed(4);
-    dimY.textContent = dim.y.toFixed(4);
-    dimZ.textContent = dim.z.toFixed(4);
-  } catch(e) {
-    dimX.textContent = "Err";
-  }
-});
+      // -- Material Setup --
+      try {
+        const model = mv.model;
+        if (model && model.materials) {
+          currentMaterials = model.materials;
+          materialsReady = true;
+        } else {
+          materialsReady = false;
+        }
+      } catch (e) { materialsReady = false; }
 
-// 3. Environment Toggle
-envSel.addEventListener('change', ()=> {
-  if(envSel.value === 'light'){
-    viewerBox.style.background='#e5e7eb';
-    mv.style.background='#e5e7eb';
-  } else {
-    viewerBox.style.background='#444';
-    mv.style.background='#444';
-  }
-});
+      // -- Dimension Calculation --
+      try {
+        const dim = mv.getDimensions(); // returns object {x, y, z} in meters
+        dimX.textContent = dim.x.toFixed(4);
+        dimY.textContent = dim.y.toFixed(4);
+        dimZ.textContent = dim.z.toFixed(4);
+      } catch (e) {
+        dimX.textContent = "Err";
+      }
+    });
 
-// 4. Color Application
-applyColor.addEventListener('click', () => {
-  if(!materialsReady){ status.textContent = 'Wait for load...'; return; }
-  
-  const hex = colorPicker.value.replace('#','');
-  const r = parseInt(hex.substring(0,2),16)/255;
-  const g = parseInt(hex.substring(2,4),16)/255;
-  const b = parseInt(hex.substring(4,6),16)/255;
-  
-  let appliedCount = 0;
-  
-  // Apply to all materials found in the glTF
-  currentMaterials.forEach(m => {
-    if(m.pbrMetallicRoughness){
-      m.pbrMetallicRoughness.setBaseColorFactor([r,g,b,1]);
-      appliedCount++;
-    }
-  });
-  
-  status.textContent = `Colored ${appliedCount} materials`;
-});
+    // 3. Environment Toggle
+    envSel.addEventListener('change', () => {
+      if (envSel.value === 'light') {
+        viewerBox.style.background = '#e5e7eb';
+        mv.style.background = '#e5e7eb';
+      } else {
+        viewerBox.style.background = '#444';
+        mv.style.background = '#444';
+      }
+    });
 
-// 5. Rotation Toggle
-let rotating = true;
-autoRotateBtn.addEventListener('click', () => {
-  rotating = !rotating;
-  if(rotating){ 
-    mv.setAttribute('auto-rotate',''); 
-    autoRotateBtn.textContent='Auto Rotate: ON';
-    autoRotateBtn.style.opacity = "1";
-  } else { 
-    mv.removeAttribute('auto-rotate'); 
-    autoRotateBtn.textContent='Auto Rotate: OFF';
-    autoRotateBtn.style.opacity = "0.7";
-  }
-});
+    // 4. Color Application
+    applyColor.addEventListener('click', () => {
+      if (!materialsReady) { status.textContent = 'Wait for load...'; return; }
 
-// 6. Reset View
-resetBtn.addEventListener('click', ()=>{ 
-  mv.dismissPoster();
-  mv.cameraOrbit = '45deg 55deg 105%';
-  mv.fieldOfView = 'auto';
-});
+      const hex = colorPicker.value.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16) / 255;
+      const g = parseInt(hex.substring(2, 4), 16) / 255;
+      const b = parseInt(hex.substring(4, 6), 16) / 255;
 
-</script>
+      let appliedCount = 0;
+
+      // Apply to all materials found in the glTF
+      currentMaterials.forEach(m => {
+        if (m.pbrMetallicRoughness) {
+          m.pbrMetallicRoughness.setBaseColorFactor([r, g, b, 1]);
+          appliedCount++;
+        }
+      });
+
+      status.textContent = `Colored ${appliedCount} materials`;
+    });
+
+    // 5. Rotation Toggle
+    let rotating = true;
+    autoRotateBtn.addEventListener('click', () => {
+      rotating = !rotating;
+      if (rotating) {
+        mv.setAttribute('auto-rotate', '');
+        autoRotateBtn.textContent = 'Auto Rotate: ON';
+        autoRotateBtn.style.opacity = "1";
+      } else {
+        mv.removeAttribute('auto-rotate');
+        autoRotateBtn.textContent = 'Auto Rotate: OFF';
+        autoRotateBtn.style.opacity = "0.7";
+      }
+    });
+
+    // 6. Reset View
+    resetBtn.addEventListener('click', () => {
+      mv.dismissPoster();
+      mv.cameraOrbit = '45deg 55deg 105%';
+      mv.fieldOfView = 'auto';
+    });
+
+  </script>
 </body>
+
 </html>

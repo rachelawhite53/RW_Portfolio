@@ -1,107 +1,124 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rachel White | Engineering Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  body {
-    font-family: 'Inter', sans-serif;
-    /* Adjusted gradient for a slightly more modern, deep aerospace feel */
-    background: linear-gradient(-45deg, #4f46e5, #7c3aed, #2563eb, #9333ea);
-    background-size: 400% 400%;
-    animation: gradientShift 12s ease infinite;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    margin: 0;
-    text-align: center;
-    overflow: hidden;
-    padding: 20px; /* Added padding so text doesn't hit edges on mobile */
-  }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Rachel White | Engineering Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      /* Adjusted gradient for a slightly more modern, deep aerospace feel */
+      background: linear-gradient(-45deg, #4f46e5, #7c3aed, #2563eb, #9333ea);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      overflow: hidden;
+      padding: 20px;
+      /* Added padding so text doesn't hit edges on mobile */
+    }
 
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
 
-  h1 {
-    font-size: 48px; /* Slightly larger */
-    font-weight: 700;
-    margin-bottom: 8px;
-    letter-spacing: -0.02em; /* Makes large text look cleaner */
-    text-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  }
+      50% {
+        background-position: 100% 50%;
+      }
 
-  h2 {
-    font-size: 20px; /* New sub-header style */
-    font-weight: 600;
-    color: #e0e7ff;
-    margin-top: 0;
-    margin-bottom: 24px;
-    opacity: 0.9;
-  }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
 
-  p {
-    font-size: 18px;
-    line-height: 1.6; /* Better readability */
-    color: #e0e7ff;
-    margin-bottom: 40px;
-    max-width: 600px; /* Prevents line length from getting too wide to read */
-  }
+    h1 {
+      font-size: 48px;
+      /* Slightly larger */
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+      /* Makes large text look cleaner */
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
 
-  a.btn {
-    display: inline-block;
-    background: #fff;
-    color: #4f46e5;
-    font-weight: 600;
-    padding: 16px 36px;
-    border-radius: 50px; /* Pill shape is trendier currently */
-    text-decoration: none;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  }
+    h2 {
+      font-size: 20px;
+      /* New sub-header style */
+      font-weight: 600;
+      color: #e0e7ff;
+      margin-top: 0;
+      margin-bottom: 24px;
+      opacity: 0.9;
+    }
 
-  a.btn:hover {
-    background: #f8fafc;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  }
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      /* Better readability */
+      color: #e0e7ff;
+      margin-bottom: 40px;
+      max-width: 600px;
+      /* Prevents line length from getting too wide to read */
+    }
 
-  a.link {
-    display: block;
-    margin-top: 24px;
-    color: #c7d2fe;
-    font-size: 15px;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
+    a.btn {
+      display: inline-block;
+      background: #fff;
+      color: #4f46e5;
+      font-weight: 600;
+      padding: 16px 36px;
+      border-radius: 50px;
+      /* Pill shape is trendier currently */
+      text-decoration: none;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
 
-  a.link:hover {
-    color: #fff;
-    text-decoration: underline;
-  }
+    a.btn:hover {
+      background: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
 
-  footer {
-    position: absolute;
-    bottom: 24px;
-    font-size: 13px;
-    color: #c7d2fe;
-    opacity: 0.7;
-  }
-</style>
+    a.link {
+      display: block;
+      margin-top: 24px;
+      color: #c7d2fe;
+      font-size: 15px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a.link:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 24px;
+      font-size: 13px;
+      color: #c7d2fe;
+      opacity: 0.7;
+    }
+  </style>
 </head>
+
 <body>
 
   <h1 style="margin-bottom: 40px;">Hi, I'm Rachel White!</h1>
-  
-  <a href="front.html" class="btn">View My Current Project</a>
-  
+
+  <a href="https://rachelawhite53.github.io/RW_Portfolio/front.html" class="btn">View My Current Project</a>
+
   <a href="https://www.linkedin.com/in/rachelwhite10/" target="_blank" class="link">Connect on LinkedIn</a>
   <a href="mailto:rachelawhite53@gmail.com" class="link">Get in Touch</a>
 
@@ -111,4 +128,5 @@
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
+
 </html>
