@@ -173,6 +173,13 @@
 
     .project-item:hover { background: var(--tag-bg); }
 
+    .project-desc a {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .project-desc a:hover { color: var(--hover); }
+
     .project-left { display: flex; flex-direction: column; gap: 2px; }
 
     .project-title {
@@ -243,7 +250,7 @@
     <div class="hero-text">
       <h1>Rachel White</h1>
       <p>
-        I'm a Mechanical Engineering student at <a href="https://pratt.duke.edu/" target="_blank">Duke University</a> (Expected May 2027). This summer I'm a LADSS Research Fellow at <a href="https://www.lanl.gov/engage/collaboration/internships/summer-schools/ladss" target="_blank">Los Alamos National Laboratory</a>.
+        I'm a Mechanical Engineering student at <a href="https://pratt.duke.edu/" target="_blank">Duke University</a> (Expected May 2027). This summer I'm a LADSS Research Fellow at <a href="https://www.lanl.gov" target="_blank">Los Alamos National Laboratory</a>.
         <br><br>
         I'm interested in sustainable systems and aerospace—particularly fluid dynamics, propulsion, and experimental testing. Outside of engineering I read, write poetry, and like to be outside.
       </p>
@@ -300,21 +307,21 @@
         </div>
       </a>
 
-      <a class="project-item" data-category="software" href="https://rachelawhite53.github.io/RW_Portfolio/calcs.html" target="_blank">
+      <div class="project-item" data-category="software" style="cursor: default;">
         <div class="project-left">
-          <div class="project-title">Variable-Swirl Jet Flow Loop Design</div>
-          <div class="project-desc">I designed and modeled a variable-swirl jet flow loop system for dynamic testing and flow visualization. Through this process, I applied fluid mechanics principles to validate experimental parameters learning from current system literature.</div>
+          <div class="project-title"><a href="https://rachelawhite53.github.io/RW_Portfolio/calcs.html" target="_blank" style="color: inherit; text-decoration: none;">Variable-Swirl Jet Flow Loop Design</a></div>
+          <div class="project-desc">Designed and modeled a variable-swirl jet flow loop system for dynamic testing and flow visualization in the <a href="https://douglas.pratt.duke.edu" target="_blank">Douglas Lab</a>. Through this process, applied fluid mechanics principles to validate experimental parameters learning from current system literature.</div>
         </div>
         <div class="project-right">
           <span class="project-date">Aug 2025–Present</span>
           <span class="project-tag">Research</span>
         </div>
-      </a>
+      </div>
 
       <div class="project-item" data-category="software">
         <div class="project-left">
           <div class="project-title">Digital Technology—Pratt & Whitney</div>
-          <div class="project-desc">I developed an end-to-end solution to automate process plan reporting for improved engineering visibility, built the Overtime Manager web app to streamline shop floor operations and reduce manual communication, and contributed to digital automation integration across manufacturing systems and bridging operational and digital technology teams.</div>
+          <div class="project-desc">Developed an end-to-end solution to automate process plan reporting for improved engineering visibility, built the Overtime Manager web app to streamline shop floor operations and reduce manual communication, and contributed to digital automation integration across manufacturing systems and bridging operational and digital technology teams.</div>
         </div>
         <div class="project-right">
           <span class="project-date">Summer 2025</span>
@@ -322,10 +329,10 @@
         </div>
       </div>
 
-      <a class="project-item" data-category="research" href="#">
+      <a class="project-item" data-category="research" href="https://aeroelasticity.pratt.duke.edu" target="_blank">
         <div class="project-left">
           <div class="project-title">Piezoelectric Airflow Experiments—Duke Aeroelasticity Lab</div>
-          <div class="project-desc">I designed a precision alignment fixture, operated Duke's wind tunnel, and reduced mechanical interference on a piezoelectric flag.</div>
+          <div class="project-desc">Designed a precision alignment fixture, operated Duke's wind tunnel, and reduced mechanical interference on a piezoelectric flag.</div>
         </div>
         <div class="project-right">
           <span class="project-date">Summer 2024</span>
@@ -333,10 +340,10 @@
         </div>
       </a>
 
-      <a class="project-item" data-category="design" href="#">
+      <a class="project-item" data-category="design" href="https://rachelawhite53.github.io/RW_Portfolio/PPH%20Poster.pdf" target="_blank">
         <div class="project-left">
           <div class="project-title">Postpartum Hemorrhage Detection Device</div>
-          <div class="project-desc">I collaborated, designed, and prototyped a sustainable device for quantifying blood loss during PPH in low-resource Ugandan clinics.</div>
+          <div class="project-desc">Collaborated, designed, and prototyped a sustainable device for quantifying blood loss during PPH in low-resource Ugandan clinics.</div>
         </div>
         <div class="project-right">
           <span class="project-date">Fall 2023</span>
@@ -344,35 +351,7 @@
         </div>
       </a>
 
-      <a class="project-item" data-category="service" href="#">
-        <div class="project-left">
-          <div class="project-title">Nesbitt Habitat Collaborative</div>
-          <div class="project-desc">I founded and directed volunteer initiative supporting construction of two student-built homes, embedding this sustainability program into school curriculum.</div>
-        </div>
-        <div class="project-right">
-          <span class="project-date">2020–2023</span>
-          <span class="project-tag">Service</span>
-        </div>
-      </a>
-
-      <a class="project-item" data-category="service" href="#">
-        <div class="project-left">
-          <div class="project-title">Future Builders</div>
-          <div class="project-desc">I founded STEM camps, tutoring, and environmental education programs to expand access for underserved youth in Asheville, NC.</div>
-        </div>
-        <div class="project-right">
-          <span class="project-date">2018–2023</span>
-          <span class="project-tag">Service</span>
-        </div>
-      </a>
-
     </div>
-  </section>
-
-  <!-- ── Writing ── -->
-  <section>
-    <div class="section-title">Writing</div>
-    <p class="coming-soon">Coming soon.</p>
   </section>
 
   <footer>© <span id="year"></span> Rachel White. All rights reserved.</footer>
