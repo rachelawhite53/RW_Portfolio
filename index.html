@@ -18,9 +18,11 @@
       --tag-bg: #f3f4f6;
       --tag-text: #374151;
       --link: #111111;
-      --hover: #4b5563;
+      --hover: #2563eb;
       --active-filter: #111111;
       --inactive-filter: #9ca3af;
+      --accent: #2563eb;
+      --accent-light: #93c5fd;
     }
 
     body {
@@ -30,6 +32,16 @@
       font-size: 15px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes expandLine {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
     }
 
     .container {
@@ -45,6 +57,7 @@
       justify-content: space-between;
       gap: 40px;
       margin-bottom: 64px;
+      animation: fadeInUp 0.6s ease-out;
     }
 
     .hero-text { flex: 1; }
@@ -54,6 +67,19 @@
       font-weight: 600;
       letter-spacing: -0.02em;
       margin-bottom: 16px;
+    }
+
+    .hero h1::after {
+      content: '';
+      display: block;
+      width: 44px;
+      height: 3px;
+      margin-top: 10px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: expandLine 0.7s ease-out 0.3s forwards;
     }
 
     .hero p {
@@ -151,8 +177,8 @@
     .filter-btn:hover { color: var(--text); }
 
     .filter-btn.active {
-      color: var(--active-filter);
-      background: var(--tag-bg);
+      color: var(--accent);
+      background: #eff6ff;
       font-weight: 500;
     }
 
@@ -168,10 +194,19 @@
       border-radius: 8px;
       text-decoration: none;
       color: var(--text);
-      transition: background 0.15s;
+      transition: background 0.15s, transform 0.15s;
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out forwards;
     }
 
-    .project-item:hover { background: var(--tag-bg); }
+    .project-item:hover { background: #eff6ff; transform: translateX(2px); }
+
+    .project-item:nth-child(1) { animation-delay: 0.08s; }
+    .project-item:nth-child(2) { animation-delay: 0.14s; }
+    .project-item:nth-child(3) { animation-delay: 0.20s; }
+    .project-item:nth-child(4) { animation-delay: 0.26s; }
+    .project-item:nth-child(5) { animation-delay: 0.32s; }
+    .project-item:nth-child(6) { animation-delay: 0.38s; }
 
     .project-desc a {
       color: var(--text);
@@ -208,8 +243,8 @@
     .project-tag {
       font-size: 11px;
       font-weight: 500;
-      color: var(--tag-text);
-      background: var(--tag-bg);
+      color: var(--accent);
+      background: #eff6ff;
       padding: 2px 7px;
       border-radius: 4px;
       white-space: nowrap;
@@ -275,10 +310,6 @@
           </svg>
         </a>
       </div>
-    </div>
-
-    <div class="headshot-placeholder">
-      photo
     </div>
   </div>
 
