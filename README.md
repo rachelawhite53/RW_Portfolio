@@ -4,9 +4,8 @@ This is the source code for my personal portfolio website.
 
 ## Structure
 - `index.html`: Main landing page (Portfolio)
-- `front.html`: Project landing page (Jet Flow Experiment)
-- `calcs.html`: Calculation tool
-- `swirler.html`, `loop.html`: 3D model viewers
+- `calcs.html`: Swirl flow calculator
+- `swirler.html`: 3D model viewer
 - `assets/`: Images and models (gltf/jpeg)
 
 ## Hosting
