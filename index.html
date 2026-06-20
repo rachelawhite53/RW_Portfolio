@@ -45,9 +45,13 @@
     }
 
     .container {
-      max-width: 720px;
+      max-width: 840px;
       margin: 0 auto;
-      padding: 72px 24px 96px;
+      padding: 72px clamp(16px, 5vw, 40px) 96px;
+    }
+
+    @media (max-width: 520px) {
+      .container { padding-top: 48px; }
     }
 
     /* ── Hero ── */
