@@ -134,7 +134,7 @@
 
     select:hover,
     button:hover {
-      border-color: #9ca3af;
+      border-color: var(--border-strong);
     }
 
     select:focus, button:focus {
@@ -153,20 +153,20 @@
 
     .model-btn.active-model {
       border-color: var(--text);
-      background: #f3f4f6;
+      background: var(--surface-hover);
       font-weight: 600;
     }
 
     /* Primary Button Style */
     button.primary {
       background: var(--text);
-      color: #ffffff;
+      color: var(--bg);
       border: none;
       font-weight: 600;
     }
 
     button.primary:hover {
-      background: #374151;
+      background: var(--text-muted);
       border-color: transparent;
     }
 
@@ -199,20 +199,22 @@
     @media (max-width: 800px) {
       .wrap {
         flex-direction: column;
+        align-items: stretch;   /* otherwise children shrink to content width */
         height: auto;
       }
 
       .viewerBox {
-        height: 50vh;
+        /* flex:1 sets flex-basis:0 which wins over height in a column
+           container, collapsing the viewer to nothing on phones. */
+        flex: none;
+        width: 100%;
+        height: 55vh;
+        min-height: 320px;
       }
 
       .controls {
         width: 100%;
         max-height: none;
-      }
-
-      .nav-bar {
-        flex-wrap: wrap;
       }
     }
   </style>
