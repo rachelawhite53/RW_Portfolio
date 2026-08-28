@@ -5,200 +5,287 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rachel White</title>
   <meta name="description" content="Mechanical Engineering student at Duke University. Interested in aerospace, sustainable systems, and making technical work more human-centered.">
+  <link rel="canonical" href="https://rachelawhite.com/">
+
+  <!-- Social preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rachelawhite.com/">
+  <meta property="og:title" content="Rachel White">
+  <meta property="og:description" content="Mechanical Engineering at Duke University. Fluid dynamics, propulsion, and experimental testing.">
+  <meta property="og:image" content="https://rachelawhite.com/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Rachel White">
+  <meta name="twitter:description" content="Mechanical Engineering at Duke University. Fluid dynamics, propulsion, and experimental testing.">
+  <meta name="twitter:image" content="https://rachelawhite.com/assets/og-image.png">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#2563eb">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/site.css">
+
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #ffffff;
-      --text: #111111;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --tag-bg: #f3f4f6;
-      --tag-text: #374151;
-      --link: #111111;
-      --hover: #2563eb;
-      --active-filter: #111111;
-      --inactive-filter: #9ca3af;
-      --accent: #2563eb;
-      --accent-light: #93c5fd;
+    .skip-link {
+      position: absolute; left: -9999px; top: 0;
+      background: var(--accent); color: #fff;
+      padding: 10px 16px; border-radius: 0 0 var(--radius-sm) 0;
+      font-size: 14px; font-weight: 500; text-decoration: none; z-index: 100;
     }
+    .skip-link:focus { left: 0; }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 15px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
+    .container {
+      max-width: var(--measure);
+      margin: 0 auto;
+      padding: 64px clamp(16px, 5vw, 40px) 0;
     }
 
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-
     @keyframes expandLine {
       from { transform: scaleX(0); }
-      to { transform: scaleX(1); }
+      to   { transform: scaleX(1); }
     }
 
-    .container {
-      max-width: 840px;
-      margin: 0 auto;
-      padding: 72px clamp(16px, 5vw, 40px) 96px;
-    }
-
-    @media (max-width: 520px) {
-      .container { padding-top: 48px; }
-    }
-
-    /* ── Hero ── */
+    /* ── Hero ────────────────────────────────────────────── */
     .hero {
-      margin-bottom: 64px;
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      margin-bottom: 72px;
       animation: fadeInUp 0.6s ease-out;
     }
 
-    .hero-body {
-      display: flex;
-      align-items: flex-start;
-      gap: 28px;
-      margin-top: 20px;
-    }
-
-    .hero-text { flex: 1; }
+    .hero-text { flex: 1; min-width: 0; }
 
     .hero h1 {
-      font-size: 26px;
+      font-size: clamp(28px, 5vw, 34px);
       font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
+      letter-spacing: -0.025em;
+      margin-bottom: 14px;
     }
 
     .hero h1::after {
       content: '';
       display: block;
-      width: 44px;
+      width: 48px;
       height: 3px;
-      margin-top: 10px;
+      margin-top: 12px;
       border-radius: 2px;
-      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-border) 100%);
       transform: scaleX(0);
       transform-origin: left;
       animation: expandLine 0.7s ease-out 0.3s forwards;
     }
 
     .hero p {
+      margin-bottom: 16px;
+      max-width: 46ch;
       color: var(--text);
-      margin-bottom: 24px;
-      max-width: 480px;
     }
+    .hero p:last-of-type { margin-bottom: 26px; }
 
     .hero p a {
       color: var(--text);
       text-decoration: underline;
+      text-decoration-color: var(--accent-border);
+      text-decoration-thickness: 1.5px;
       text-underline-offset: 3px;
+      transition: color 0.15s, text-decoration-color 0.15s;
+    }
+    .hero p a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+    /* ── Headshot ────────────────────────────────────────── */
+    .headshot-frame {
+      position: relative;
+      width: 176px;
+      height: 176px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      padding: 4px;
+      background: linear-gradient(140deg, var(--accent) 0%, #93c5fd 48%, #c7d2fe 100%);
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s;
     }
 
-    .hero p a:hover { color: var(--hover); }
-
-    .social-links {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
+    .headshot-frame::before {
+      content: '';
+      position: absolute;
+      inset: -22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 26%, rgb(37 99 235 / 0.20), transparent 68%);
+      z-index: -1;
     }
 
-    .social-links a {
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.15s;
-      display: flex;
-      align-items: center;
-    }
-
-    .social-links a:hover { color: var(--text); }
-
-    .social-links svg {
-      width: 20px;
-      height: 20px;
+    .headshot-frame:hover {
+      transform: translateY(-4px) scale(1.015);
+      box-shadow: 0 28px 52px -14px rgb(37 99 235 / 0.38);
     }
 
     .headshot {
-      width: 108px;
-      height: 108px;
+      display: block;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       object-fit: cover;
-      flex-shrink: 0;
-      background: var(--tag-bg);
+      border: 3px solid var(--bg);
+      background: var(--surface-hover);
+    }
+
+    /* ── Social ──────────────────────────────────────────── */
+    .social-links { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .social-links a {
+      color: var(--text-muted);
+      text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      transition: color 0.15s, background 0.15s, transform 0.15s;
     }
-
-    .headshot-placeholder {
-      width: 108px;
-      height: 108px;
-      border-radius: 50%;
-      background: var(--tag-bg);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-      padding: 10px;
+    .social-links a:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+      transform: translateY(-1px);
     }
+    .social-links svg { width: 19px; height: 19px; }
 
-    /* ── Section ── */
-    section { margin-bottom: 56px; }
+    /* ── Sections ────────────────────────────────────────── */
+    section { margin-bottom: 64px; }
 
     .section-title {
-      font-size: 15px;
+      font-size: 12px;
       font-weight: 600;
-      margin-bottom: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 18px;
     }
 
-    /* ── Filters ── */
-    .filters {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
+    /* ── Featured card ───────────────────────────────────── */
+    .featured-card {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 0;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--surface);
+      transition: border-color 0.2s, box-shadow 0.25s, transform 0.25s;
     }
+
+    .featured-card:hover {
+      border-color: var(--accent-border);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .featured-media {
+      background: #fff;
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      min-height: 218px;
+    }
+
+    .featured-media img {
+      width: 100%;
+      height: 100%;
+      max-height: 218px;
+      object-fit: contain;
+    }
+
+    .featured-body { padding: 24px 26px; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      padding: 3px 9px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+    }
+
+    .featured-body h3 {
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      margin-bottom: 8px;
+    }
+
+    .featured-body p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .featured-cta {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .featured-card:hover .featured-cta .arrow { transform: translateX(3px); }
+    .featured-cta .arrow { transition: transform 0.2s; }
+
+    @media (max-width: 640px) {
+      .featured-card { grid-template-columns: 1fr; }
+      .featured-media { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+
+    /* ── Filters ─────────────────────────────────────────── */
+    .filters { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 18px; }
 
     .filter-btn {
       background: none;
-      border: none;
+      border: 1px solid transparent;
       cursor: pointer;
       font-family: inherit;
-      font-size: 14px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      color: var(--inactive-filter);
-      transition: color 0.15s, background 0.15s;
+      font-size: 13.5px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      color: var(--text-faint);
+      transition: color 0.15s, background 0.15s, border-color 0.15s;
     }
+    .filter-btn:hover { color: var(--text); background: var(--surface-hover); }
 
-    .filter-btn:hover { color: var(--text); }
-
-    .filter-btn.active {
+    .filter-btn[aria-pressed="true"] {
       color: var(--accent);
-      background: #eff6ff;
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
       font-weight: 500;
     }
 
-    /* ── Project list ── */
+    /* ── Project list ────────────────────────────────────── */
     .project-list { display: flex; flex-direction: column; gap: 2px; }
 
     .project-item {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 118px 82px;
       align-items: baseline;
-      justify-content: space-between;
       gap: 16px;
-      padding: 12px 10px;
-      border-radius: 8px;
+      padding: 14px 12px;
+      border-radius: var(--radius);
       text-decoration: none;
       color: var(--text);
       transition: background 0.15s, transform 0.15s;
@@ -206,44 +293,59 @@
       animation: fadeInUp 0.5s ease-out forwards;
     }
 
-    .project-item:hover { background: #eff6ff; transform: translateX(2px); }
+    a.project-item:hover { background: var(--accent-soft); transform: translateX(2px); }
+    a.project-item:hover .project-title { color: var(--accent); }
+    a.project-item:hover .project-arrow { opacity: 1; transform: translateX(0); }
 
-    .project-item:nth-child(1) { animation-delay: 0.08s; }
-    .project-item:nth-child(2) { animation-delay: 0.14s; }
-    .project-item:nth-child(3) { animation-delay: 0.20s; }
-    .project-item:nth-child(4) { animation-delay: 0.26s; }
-    .project-item:nth-child(5) { animation-delay: 0.32s; }
-    .project-item:nth-child(6) { animation-delay: 0.38s; }
+    /* Rows with no destination must not pretend to be links. */
+    .project-item.is-static { cursor: default; }
+
+    .project-item:nth-child(1) { animation-delay: 0.06s; }
+    .project-item:nth-child(2) { animation-delay: 0.12s; }
+    .project-item:nth-child(3) { animation-delay: 0.18s; }
+    .project-item:nth-child(4) { animation-delay: 0.24s; }
+    .project-item:nth-child(5) { animation-delay: 0.30s; }
+    .project-item:nth-child(6) { animation-delay: 0.36s; }
+
+    /* Once filtering starts, entrance animation must not replay. */
+    .project-list.no-anim .project-item {
+      animation: none !important;
+      opacity: 1;
+    }
+
+    .project-left { min-width: 0; }
+
+    .project-title {
+      font-size: 14.5px;
+      font-weight: 500;
+      margin-bottom: 3px;
+      transition: color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .project-arrow {
+      opacity: 0;
+      transform: translateX(-3px);
+      transition: opacity 0.15s, transform 0.15s;
+      flex-shrink: 0;
+      color: var(--accent);
+    }
+
+    .project-desc { font-size: 13px; color: var(--text-muted); }
 
     .project-desc a {
-      color: var(--text);
+      color: var(--text-muted);
       text-decoration: underline;
       text-underline-offset: 2px;
     }
-    .project-desc a:hover { color: var(--hover); }
-
-    .project-left { display: flex; flex-direction: column; gap: 2px; }
-
-    .project-title {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .project-desc {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .project-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
+    .project-desc a:hover { color: var(--accent); }
 
     .project-date {
       font-size: 13px;
-      color: var(--muted);
+      color: var(--text-muted);
+      text-align: right;
       white-space: nowrap;
     }
 
@@ -251,170 +353,209 @@
       font-size: 11px;
       font-weight: 500;
       color: var(--accent);
-      background: #eff6ff;
-      padding: 2px 7px;
-      border-radius: 4px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      padding: 2px 0;
+      border-radius: 100px;
+      text-align: center;
       white-space: nowrap;
-      text-transform: capitalize;
+      justify-self: end;
+      width: 100%;
     }
 
     .project-item.hidden { display: none; }
 
-    /* ── Writing ── */
-    .coming-soon {
+    .empty-state {
+      display: none;
       font-size: 14px;
-      color: var(--muted);
+      color: var(--text-muted);
+      padding: 20px 12px;
     }
+    .empty-state.visible { display: block; }
 
-    /* ── Footer ── */
-    footer {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 80px;
-      border-top: 1px solid var(--border);
-      padding-top: 24px;
-    }
+    @media (max-width: 640px) {
+      .hero { flex-direction: column; align-items: flex-start; gap: 26px; margin-bottom: 56px; }
+      .headshot-frame { order: -1; width: 132px; height: 132px; }
+      .hero p { max-width: none; }
 
-    /* ── Responsive ── */
-    @media (max-width: 520px) {
-      .hero-body { flex-direction: column; gap: 16px; }
-      .headshot { display: none; }
-      .project-item { flex-direction: column; gap: 4px; }
-      .project-right { align-self: flex-start; }
+      .project-item {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .project-date { text-align: left; }
+      .project-tag { justify-self: start; width: auto; padding: 2px 10px; }
     }
   </style>
 </head>
 <body>
-<div class="container">
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-nav">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="/">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="7" fill="#2563eb"/>
+        <path d="M16 4 A12 12 0 0 1 16 28 A10 10 0 0 1 16 8 A7.5 7.5 0 0 1 16 23 A5.5 5.5 0 0 1 16 12 A3 3 0 0 1 16 18"
+              fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+      Rachel White
+    </a>
+    <nav class="site-nav-links" aria-label="Primary">
+      <a href="#projects">Projects</a>
+      <a href="port.html">Flow Loop Project</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container" id="main">
 
   <!-- ── Hero ── -->
   <div class="hero">
-    <h1>Rachel White</h1>
-    <div class="hero-body">
-      <img src="pfp.jpg" alt="Rachel White" class="headshot">
-      <div class="hero-text">
-        <p>
-          I'm a Mechanical Engineering student at <a href="https://pratt.duke.edu/" target="_blank">Duke University</a> (Expected May 2027). This summer I'm a LADSS Research Fellow at <a href="https://www.lanl.gov" target="_blank">Los Alamos National Laboratory</a>.
-          <br><br>
-          I'm interested in sustainable systems and aerospace—particularly fluid dynamics, propulsion, and experimental testing. Outside of engineering, I like to read fantasy, write poetry, go to concerts, and be outside and likely birdwatching.
-        </p>
-        <div class="social-links">
-          <!-- LinkedIn -->
-          <a href="https://www.linkedin.com/in/rachelwhite10/" target="_blank" aria-label="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-            </svg>
-          </a>
-          <!-- GitHub -->
-          <a href="https://github.com/rachelawhite53" target="_blank" aria-label="GitHub">
-            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-            </svg>
-          </a>
-          <!-- Email -->
-          <a href="mailto:rachel.a.white@duke.edu" aria-label="Email">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-              <rect x="2" y="4" width="20" height="16" rx="2"/>
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-            </svg>
-          </a>
-        </div>
+    <div class="hero-text">
+      <h1>Rachel White</h1>
+      <p>
+        I'm a Mechanical Engineering student at <a href="https://pratt.duke.edu/" target="_blank" rel="noopener">Duke University</a> (Expected May 2027). This summer I'm a LADSS Research Fellow at <a href="https://www.lanl.gov" target="_blank" rel="noopener">Los Alamos National Laboratory</a>.
+      </p>
+      <p>
+        I'm interested in sustainable systems and aerospace&mdash;particularly fluid dynamics, propulsion, and experimental testing. Outside of engineering, I like to read fantasy, write poetry, go to concerts, and be outside and likely birdwatching.
+      </p>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/rachelwhite10/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+        <a href="https://github.com/rachelawhite53" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          </svg>
+        </a>
+        <a href="mailto:rachel.a.white@duke.edu" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+          </svg>
+        </a>
       </div>
+    </div>
+
+    <div class="headshot-frame">
+      <img src="pfp.jpg" alt="Rachel White" class="headshot" width="176" height="176">
     </div>
   </div>
 
-  <!-- ── Projects ── -->
-  <section>
-    <div class="section-title">Selected Projects</div>
-
-    <div class="filters">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="research">Research</button>
-      <button class="filter-btn" data-filter="design">Design</button>
-      <button class="filter-btn" data-filter="software">Software</button>
-    </div>
-
-    <div class="project-list">
-
-      <a class="project-item" data-category="research" href="https://www.lanl.gov/engage/collaboration/internships/summer-schools/ladss" target="_blank">
-        <div class="project-left">
-          <div class="project-title">LADSS Research Fellowship—Los Alamos National Laboratory</div>
-          <div class="project-desc">Selected this summer for a competitive 10-week research fellowship in multi-disciplinary dynamics. I will conduct team-based R&D with LANL scientists and engineers to instrument the Rapid Angular Acceleration Test Stand.</div>
-        </div>
-        <div class="project-right">
-          <span class="project-date">Summer 2026</span>
-          <span class="project-tag">Research</span>
-        </div>
-      </a>
-
-      <div class="project-item" data-category="software" style="cursor: default;">
-        <div class="project-left">
-          <div class="project-title"><a href="https://rachelawhite53.github.io/RW_Portfolio/calcs.html" target="_blank" style="color: inherit; text-decoration: none;">Variable-Swirl Jet Flow Loop Design</a></div>
-          <div class="project-desc">Designed and modeled a variable-swirl jet flow loop system for dynamic testing and flow visualization in the <a href="https://douglas.pratt.duke.edu/" target="_blank">Douglas Research Lab</a>. Through this process, I apply fluid mechanics principles to validate experimental parameters and learn from current system literature.</div>
-        </div>
-        <div class="project-right">
-          <span class="project-date">Aug 2025–Present</span>
-          <span class="project-tag">Research</span>
-        </div>
+  <!-- ── Featured ── -->
+  <section aria-labelledby="current-title">
+    <h2 class="section-title" id="current-title">Current Focus</h2>
+    <a class="featured-card" href="port.html">
+      <div class="featured-media">
+        <img src="assets/drawing1.jpeg" alt="Hand-drawn schematic of the variable-swirl jet flow loop, showing the swirler, twin return reservoirs, overflow valves, ball valves, and recirculation pump.">
       </div>
-
-      <div class="project-item" data-category="software">
-        <div class="project-left">
-          <div class="project-title">Digital Technology—Pratt & Whitney</div>
-          <div class="project-desc">Developed an end-to-end solution to automate process plan reporting for improved engineering visibility, built the Overtime Manager web app to streamline shop floor operations and reduce manual communication, and contributed to digital automation integration across manufacturing systems and bridging operational and digital technology teams.</div>
-        </div>
-        <div class="project-right">
-          <span class="project-date">Summer 2025</span>
-          <span class="project-tag">Software</span>
-        </div>
+      <div class="featured-body">
+        <span class="eyebrow">Douglas Research Lab</span>
+        <h3>Variable-Swirl Jet Flow Loop</h3>
+        <p>Designing and modeling a variable-swirl jet flow loop for dynamic testing and flow visualization &mdash; applying fluid mechanics to validate experimental parameters against the system literature.</p>
+        <span class="featured-cta">Read the interactive report <span class="arrow" aria-hidden="true">&rarr;</span></span>
       </div>
-
-      <a class="project-item" data-category="research" href="https://aeroelasticity.pratt.duke.edu" target="_blank">
-        <div class="project-left">
-          <div class="project-title">Piezoelectric Airflow Experiments—Duke Aeroelasticity Lab</div>
-          <div class="project-desc">Designed a precision alignment fixture, operated Duke's wind tunnel, and reduced mechanical interference on a piezoelectric flag.</div>
-        </div>
-        <div class="project-right">
-          <span class="project-date">Summer 2024</span>
-          <span class="project-tag">Research</span>
-        </div>
-      </a>
-
-      <a class="project-item" data-category="design" href="https://rachelawhite53.github.io/RW_Portfolio/PPH%20Poster.pdf" target="_blank">
-        <div class="project-left">
-          <div class="project-title">Postpartum Hemorrhage Detection Device</div>
-          <div class="project-desc">Collaborated, designed, and prototyped a sustainable device for quantifying blood loss during PPH in low-resource Ugandan clinics.</div>
-        </div>
-        <div class="project-right">
-          <span class="project-date">Fall 2023</span>
-          <span class="project-tag">Design</span>
-        </div>
-      </a>
-
-    </div>
+    </a>
   </section>
 
-  <footer>© <span id="year"></span> Rachel White. All rights reserved.</footer>
-</div>
+  <!-- ── Projects ── -->
+  <section id="projects" aria-labelledby="projects-title">
+    <h2 class="section-title" id="projects-title">Selected Projects</h2>
+
+    <div class="filters" role="group" aria-label="Filter projects by category">
+      <button class="filter-btn" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter-btn" data-filter="research" aria-pressed="false">Research</button>
+      <button class="filter-btn" data-filter="design" aria-pressed="false">Design</button>
+      <button class="filter-btn" data-filter="software" aria-pressed="false">Software</button>
+    </div>
+
+    <div class="project-list" id="project-list">
+
+      <a class="project-item" data-category="research" href="https://www.lanl.gov/engage/collaboration/internships/summer-schools/ladss" target="_blank" rel="noopener">
+        <div class="project-left">
+          <div class="project-title">LADSS Research Fellowship &mdash; Los Alamos National Laboratory <span class="project-arrow" aria-hidden="true">&#8599;</span></div>
+          <div class="project-desc">Selected for a competitive 10-week fellowship in multi-disciplinary dynamics. Conducting team-based R&amp;D with LANL scientists to instrument the Rapid Angular Acceleration Test Stand.</div>
+        </div>
+        <div class="project-date">Summer 2026</div>
+        <span class="project-tag">Research</span>
+      </a>
+
+      <a class="project-item" data-category="research" href="port.html">
+        <div class="project-left">
+          <div class="project-title">Variable-Swirl Jet Flow Loop Design <span class="project-arrow" aria-hidden="true">&rarr;</span></div>
+          <div class="project-desc">Designed and modeled a variable-swirl jet flow loop for dynamic testing and flow visualization in the Douglas Research Lab. Interactive report, parameter calculator, and CAD viewer.</div>
+        </div>
+        <div class="project-date">Aug 2025&ndash;Present</div>
+        <span class="project-tag">Research</span>
+      </a>
+
+      <div class="project-item is-static" data-category="software">
+        <div class="project-left">
+          <div class="project-title">Digital Technology &mdash; Pratt &amp; Whitney</div>
+          <div class="project-desc">Automated process-plan reporting for engineering visibility, and built the Overtime Manager web app to streamline shop-floor operations and cut manual communication.</div>
+        </div>
+        <div class="project-date">Summer 2025</div>
+        <span class="project-tag">Software</span>
+      </div>
+
+      <a class="project-item" data-category="research" href="https://aeroelasticity.pratt.duke.edu" target="_blank" rel="noopener">
+        <div class="project-left">
+          <div class="project-title">Piezoelectric Airflow Experiments &mdash; Duke Aeroelasticity Lab <span class="project-arrow" aria-hidden="true">&#8599;</span></div>
+          <div class="project-desc">Designed a precision alignment fixture, operated Duke's wind tunnel, and reduced mechanical interference on a piezoelectric flag.</div>
+        </div>
+        <div class="project-date">Summer 2024</div>
+        <span class="project-tag">Research</span>
+      </a>
+
+      <a class="project-item" data-category="design" href="pph-poster.pdf" target="_blank" rel="noopener">
+        <div class="project-left">
+          <div class="project-title">Postpartum Hemorrhage Detection Device <span class="project-arrow" aria-hidden="true">&#8599;</span></div>
+          <div class="project-desc">Collaborated, designed, and prototyped a sustainable device for quantifying blood loss during PPH in low-resource Ugandan clinics.</div>
+        </div>
+        <div class="project-date">Fall 2023</div>
+        <span class="project-tag">Design</span>
+      </a>
+
+    </div>
+
+    <p class="empty-state" id="empty-state">No projects in this category yet.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <span>&copy; <span id="year"></span> Rachel White</span>
+  <a href="mailto:rachel.a.white@duke.edu">rachel.a.white@duke.edu</a>
+</footer>
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
 
-  const btns = document.querySelectorAll('.filter-btn');
-  const items = document.querySelectorAll('.project-item');
+  const btns  = document.querySelectorAll('.filter-btn');
+  const list  = document.getElementById('project-list');
+  const items = list.querySelectorAll('.project-item');
+  const empty = document.getElementById('empty-state');
 
   btns.forEach(btn => {
     btn.addEventListener('click', () => {
-      btns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      // Stop the entrance animation replaying on every filter change.
+      list.classList.add('no-anim');
+
+      btns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+
       const filter = btn.dataset.filter;
+      let shown = 0;
+
       items.forEach(item => {
-        if (filter === 'all' || item.dataset.category === filter) {
-          item.classList.remove('hidden');
-        } else {
-          item.classList.add('hidden');
-        }
+        const match = filter === 'all' || item.dataset.category === filter;
+        item.classList.toggle('hidden', !match);
+        if (match) shown++;
       });
+
+      empty.classList.toggle('visible', shown === 0);
     });
   });
 </script>
