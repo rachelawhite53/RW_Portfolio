@@ -9,8 +9,22 @@
     <script src="https://cdn.tailwindcss.com" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
+    <meta name="description" content="Interactive report on a variable-swirl jet flow loop: swirl regimes, instabilities, flow-loop schematic, CAD model, and a parameter calculator.">
+    <link rel="canonical" href="https://rachelawhite.com/port.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://rachelawhite.com/port.html">
+    <meta property="og:title" content="Swirling Jet Flow Experiment">
+    <meta property="og:description" content="Interactive report: swirl regimes, instabilities, flow-loop schematic, CAD model, and a parameter calculator.">
+    <meta property="og:image" content="https://rachelawhite.com/assets/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://rachelawhite.com/assets/og-image.png">
+
     <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/site.css">
 
     <!-- MathJax config (v3) - supports inline $...$ and \(..\) -->
     <script>
@@ -28,6 +42,8 @@
 
     <!-- Chosen Palette: Engineering Blueprint -->
     <style>
+        :root { --measure: 1280px; }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* slate-50 */
@@ -125,6 +141,28 @@
     </style>
 </head>
 <body class="antialiased">
+<header class="site-nav">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="index.html">
+      
+      Rachel White
+    </a>
+    <nav class="site-nav-links" aria-label="Primary">
+      <a href="index.html#projects">Projects</a>
+      <a href="port.html" aria-current="page">Flow Loop Project</a>
+    </nav>
+  </div>
+</header>
+
+<nav class="project-nav" aria-label="Variable-swirl jet flow loop">
+  <span class="project-nav-label">Flow Loop</span>
+  <a href="port.html" aria-current="page">Report</a>
+  <a href="calcs.html">Calculator</a>
+  <a href="swirler.html">3D Model</a>
+  <a href="final-presentation.pdf" target="_blank" rel="noopener" class="ext">Slides</a>
+  <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project" target="_blank" rel="noopener" class="ext">Timeline</a>
+</nav>
+
     <div class="container mx-auto px-4 py-8 max-w-7xl">
 
         <header class="text-center mb-12">
@@ -655,5 +693,10 @@
             }
         });
     </script>
+<footer class="site-footer">
+  <span>&copy; <span class="year"></span> Rachel White</span>
+  <a href="index.html">rachelawhite.com</a>
+</footer>
+<script>document.querySelectorAll('.year').forEach(function (e) { e.textContent = new Date().getFullYear(); });</script>
 </body>
 </html>
