@@ -174,6 +174,59 @@ a { color: var(--accent); }
   .site-nav-links { justify-content: flex-start; margin-left: -10px; }
 }
 
+/* ── Project sub-nav ────────────────────────────────────
+   Second level, used by the three flow-loop pages. Pages set
+   their own --measure so this lines up with their container. */
+.project-nav {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 26px clamp(16px, 5vw, 40px) 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.project-nav .project-nav-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-right: 10px;
+}
+
+.project-nav a {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.project-nav a:hover { color: var(--text); background: var(--surface-hover); }
+
+.project-nav a[aria-current="page"] {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+
+.project-nav .ext::after {
+  content: ' \2197';
+  font-size: 0.85em;
+  opacity: 0.7;
+}
+
+@media (max-width: 560px) {
+  .project-nav { padding-top: 18px; }
+  .project-nav .project-nav-label { width: 100%; margin-bottom: 4px; }
+}
+
 /* ── Shared footer ──────────────────────────────────────── */
 .site-footer {
   max-width: var(--measure);

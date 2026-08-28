@@ -5,8 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Swirling Jet Calculator</title>
 
+<meta name="description" content="Interactive calculator for swirl number, Reynolds number, and cross-sectional areas of a variable-swirl jet flow loop.">
+<link rel="canonical" href="https://rachelawhite.com/calcs.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://rachelawhite.com/calcs.html">
+<meta property="og:title" content="Swirling Jet: Parameter Calculator">
+<meta property="og:description" content="Compute swirl number, Reynolds number, and cross-sectional areas for a variable-swirl jet flow loop.">
+<meta property="og:image" content="https://rachelawhite.com/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://rachelawhite.com/assets/og-image.png">
+
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -18,52 +32,21 @@
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+  /* Palette lives in assets/site.css. These are local aliases so the
+     rules further down keep their original names. */
   :root {
-    --bg: #ffffff;
-    --text: #111111;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    --surface: #f9fafb;
+    --muted: var(--text-muted);
+    --surface: var(--bg-subtle);
+    --measure: 900px;
   }
 
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 15px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    padding: 32px clamp(16px, 5vw, 40px) 96px;
-  }
-
-  /* ── Nav ── */
-  .nav-bar {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin-bottom: 48px;
-    flex-wrap: wrap;
-  }
-
-  .nav-bar a {
-    text-decoration: none;
-    color: var(--muted);
-    font-weight: 500;
-    font-size: 14px;
-    padding: 5px 12px;
-    border-radius: 6px;
-    transition: color 0.15s, background 0.15s;
-  }
-
-  .nav-bar a:hover { color: var(--text); background: var(--surface); }
-  .nav-bar a.active { color: var(--text); background: var(--surface); font-weight: 600; }
+  body { padding: 0 0 40px; }
 
   /* ── Page container ── */
   .container {
-    max-width: 900px;
+    max-width: var(--measure);
     margin: 0 auto;
+    padding: 40px clamp(16px, 5vw, 40px) 0;
   }
 
   h1 {
@@ -337,11 +320,26 @@
 </head>
 <body>
 
-  <div class="nav-bar">
-    <a href="calcs.html" class="active">Swirl Calculator</a>
-    <a href="swirler.html">3D Model</a>
-    <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project" target="_blank">Project Timeline</a>
+<header class="site-nav">
+  <div class="site-nav-inner">
+    <a class="site-nav-brand" href="index.html">
+      Rachel White
+    </a>
+    <nav class="site-nav-links" aria-label="Primary">
+      <a href="index.html#projects">Projects</a>
+      <a href="port.html">Flow Loop Project</a>
+    </nav>
   </div>
+</header>
+
+<nav class="project-nav" aria-label="Variable-swirl jet flow loop">
+  <span class="project-nav-label">Flow Loop</span>
+  <a href="port.html">Report</a>
+  <a href="calcs.html" aria-current="page">Calculator</a>
+  <a href="swirler.html">3D Model</a>
+  <a href="final-presentation.pdf" target="_blank" rel="noopener" class="ext">Slides</a>
+  <a href="https://trello.com/invite/b/689249fb730b8574c7702b8f/ATTIca800c2d2808143cd2956d317f3cbfbaB903CCA1/jet-flow-visualization-project" target="_blank" rel="noopener" class="ext">Timeline</a>
+</nav>
 
   <div class="container">
 
@@ -555,42 +553,83 @@ const qtotalResult = document.getElementById('qtotalResult');
 const ctxD2 = document.getElementById('chartD2').getContext('2d');
 const ctxDN = document.getElementById('chartDN').getContext('2d');
 
-const chartD2 = new Chart(ctxD2, {
-  type: 'line',
-  data: {
-    labels: [],
-    datasets: [
-      { label: 'Swirl Number (S)', data: [], borderColor: '#111111', backgroundColor: 'rgba(17,17,17,0.05)', borderWidth: 2, tension: 0.4 },
-      { label: 'Re (×1000)',       data: [], borderColor: '#9ca3af', backgroundColor: 'rgba(156,163,175,0.05)', borderWidth: 2, tension: 0.4 }
-    ]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    scales: {
-      y: { beginAtZero: true, title: { display: true, text: 'S / Re(×1000)' }, grid: { color: '#f3f4f6' } },
-      x: { title: { display: true, text: 'Q_ax (GPM)' }, grid: { color: '#f3f4f6' } }
-    },
-    plugins: { legend: { display: true, position: 'top', labels: { font: { size: 12 }, boxWidth: 12 } } }
-  }
-});
+/* S and Re differ by ~3 orders of magnitude, so a single shared axis
+   flattened S onto the zero line. Each series now gets its own axis
+   and its own colour; theme colours are read from assets/site.css so
+   the charts follow light/dark like the rest of the page. */
+function theme() {
+  const css = getComputedStyle(document.documentElement);
+  const v = n => css.getPropertyValue(n).trim();
+  return {
+    s:     v('--series-1'),
+    re:    v('--series-2'),
+    grid:  v('--border'),
+    tick:  v('--text-muted'),
+    label: v('--text')
+  };
+}
 
-const chartDN = new Chart(ctxDN, {
-  type: 'line',
-  data: {
-    labels: [],
-    datasets: [
-      { label: 'Swirl Number (S)', data: [], borderColor: '#111111', backgroundColor: 'rgba(17,17,17,0.05)', borderWidth: 2, tension: 0.4 },
-      { label: 'Re (×1000)',       data: [], borderColor: '#9ca3af', backgroundColor: 'rgba(156,163,175,0.05)', borderWidth: 2, tension: 0.4 }
-    ]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    scales: {
-      y: { beginAtZero: true, title: { display: true, text: 'S / Re(×1000)' }, grid: { color: '#f3f4f6' } },
-      x: { title: { display: true, text: 'Q_tan (GPM)' }, grid: { color: '#f3f4f6' } }
+function makeChart(ctx, xTitle) {
+  const t = theme();
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'Swirl Number (S)', data: [], yAxisID: 'yS',
+          borderColor: t.s, backgroundColor: t.s,
+          borderWidth: 2, tension: 0.4, pointRadius: 0, pointHoverRadius: 4 },
+        { label: 'Re (×1000)', data: [], yAxisID: 'yRe',
+          borderColor: t.re, backgroundColor: t.re, borderDash: [5, 4],
+          borderWidth: 2, tension: 0.4, pointRadius: 0, pointHoverRadius: 4 }
+      ]
     },
-    plugins: { legend: { display: true, position: 'top', labels: { font: { size: 12 }, boxWidth: 12 } } }
-  }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        yS: {
+          type: 'linear', position: 'left', beginAtZero: true,
+          title: { display: true, text: 'Swirl Number (S)', color: t.s },
+          ticks: { color: t.tick }, grid: { color: t.grid }
+        },
+        yRe: {
+          type: 'linear', position: 'right', beginAtZero: true,
+          title: { display: true, text: 'Re (×1000)', color: t.re },
+          ticks: { color: t.tick }, grid: { drawOnChartArea: false }
+        },
+        x: {
+          title: { display: true, text: xTitle, color: t.label },
+          ticks: { color: t.tick }, grid: { color: t.grid }
+        }
+      },
+      plugins: {
+        legend: { display: true, position: 'top',
+                  labels: { font: { size: 12 }, boxWidth: 12, usePointStyle: true, color: t.label } }
+      }
+    }
+  });
+}
+
+const chartD2 = makeChart(ctxD2, 'Q_ax (GPM)');
+const chartDN = makeChart(ctxDN, 'Q_tan (GPM)');
+
+/* Repaint when the OS flips between light and dark. */
+const scheme = window.matchMedia('(prefers-color-scheme: dark)');
+scheme.addEventListener('change', () => {
+  const t = theme();
+  [chartD2, chartDN].forEach(c => {
+    c.data.datasets[0].borderColor = c.data.datasets[0].backgroundColor = t.s;
+    c.data.datasets[1].borderColor = c.data.datasets[1].backgroundColor = t.re;
+    c.options.scales.yS.title.color = t.s;
+    c.options.scales.yRe.title.color = t.re;
+    c.options.scales.yS.ticks.color = c.options.scales.yRe.ticks.color = c.options.scales.x.ticks.color = t.tick;
+    c.options.scales.yS.grid.color = c.options.scales.x.grid.color = t.grid;
+    c.options.scales.x.title.color = t.label;
+    c.options.plugins.legend.labels.color = t.label;
+    c.update();
+  });
 });
 
 function computePhysics(qAxGpm, qTanGpm, dN_mm, d1_mm, nInlets, h_mm, b_mm) {
@@ -732,5 +771,10 @@ applyQtotalBtn.addEventListener('click', () => {
 
 updateCalculatorUI();
 </script>
+<footer class="site-footer">
+  <span>&copy; <span class="year"></span> Rachel White</span>
+  <a href="index.html">rachelawhite.com</a>
+</footer>
+<script>document.querySelectorAll('.year').forEach(function (e) { e.textContent = new Date().getFullYear(); });</script>
 </body>
 </html>
