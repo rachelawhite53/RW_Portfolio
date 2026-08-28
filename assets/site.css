@@ -1,6 +1,6 @@
 /* ============================================================
    Shared design tokens + chrome for rachelawhite.com
-   Loaded by index.html, port.html, calcs.html, swirler.html
+   Loaded by index.html, calcs.html, swirler.html
    ============================================================ */
 
 /* ── Tokens ─────────────────────────────────────────────── */
@@ -139,39 +139,8 @@ a { color: var(--accent); }
   flex-shrink: 0;
 }
 
-.site-nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.site-nav-links a {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
-  text-decoration: none;
-  padding: 5px 10px;
-  border-radius: var(--radius-sm);
-  transition: color 0.15s, background 0.15s;
-  white-space: nowrap;
-}
-
-.site-nav-links a:hover {
-  color: var(--text);
-  background: var(--surface-hover);
-}
-
-.site-nav-links a[aria-current="page"] {
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-
 @media (max-width: 560px) {
-  .site-nav { height: auto; padding-top: 8px; padding-bottom: 8px; }
-  .site-nav-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .site-nav-links { justify-content: flex-start; margin-left: -10px; }
+  .site-nav { height: 48px; }
 }
 
 /* ── Project sub-nav ────────────────────────────────────
