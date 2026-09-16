@@ -97,6 +97,17 @@
     }
     .skip-link:focus { left: 0; }
 
+    .site-nav-link {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 100px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .site-nav-link:hover { color: var(--text); background: var(--surface-hover); }
+
     .container {
       max-width: var(--measure);
       margin: 0 auto;
@@ -225,20 +236,20 @@
     }
 
     .featured-media {
-      background: #fff;
+      background: var(--surface-hover);
       border-right: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 18px;
       min-height: 218px;
+      overflow: hidden;
     }
 
     .featured-media img {
       width: 100%;
       height: 100%;
       max-height: 218px;
-      object-fit: contain;
+      object-fit: cover;
     }
 
     .featured-body { padding: 24px 26px; }
@@ -437,6 +448,7 @@
     <a class="site-nav-brand" href="/">
       Rachel White
     </a>
+    <a class="site-nav-link" href="gallery.html">Gallery</a>
   </div>
 </header>
 
@@ -480,7 +492,7 @@
     <h2 class="section-title" id="current-title">Current Focus</h2>
     <a class="featured-card" href="calcs.html">
       <div class="featured-media">
-        <img src="assets/drawing1.jpeg" alt="Hand-drawn schematic of the variable-swirl jet flow loop, showing the swirler, twin return reservoirs, overflow valves, ball valves, and recirculation pump.">
+        <img src="gallery/swirler.jpg" alt="Swirler nozzle head mounted in the light box for flow visualization testing.">
       </div>
       <div class="featured-body">
         <span class="eyebrow">Douglas Research Lab</span>
